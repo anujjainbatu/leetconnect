@@ -316,6 +316,31 @@ input[type="checkbox"] {
 .stat-value.ranking {
   color: #8b9dc3;
   font-size: 9px;
+  position: relative;
+}
+
+/* Add ranking position indicator for top performers */
+.user-box[data-rank="1"] .stat-value.ranking::before {
+  content: "🥇 ";
+  font-size: 10px;
+}
+
+.user-box[data-rank="2"] .stat-value.ranking::before {
+  content: "🥈 ";
+  font-size: 10px;
+}
+
+.user-box[data-rank="3"] .stat-value.ranking::before {
+  content: "🥉 ";
+  font-size: 10px;
+}
+
+/* Highlight top 3 users with subtle border */
+.user-box[data-rank="1"],
+.user-box[data-rank="2"],
+.user-box[data-rank="3"] {
+  border-left: 3px solid #FFA116;
+  background: rgba(255, 161, 22, 0.05);
 }
 
 .stat-value.easy {

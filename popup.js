@@ -78,6 +78,7 @@ const fetchStats = async (username) => {
     const userInfo = {
       username,
       totalSolved: cachedData?.totalSolved || 0,
+      ranking: cachedData?.ranking || Number.MAX_SAFE_INTEGER, // Set high ranking for error state
       error: true,
       box
     };
@@ -185,8 +186,15 @@ const sortUsers = () => {
   // Sort userData based on selected option
   if (sortType === "alphabetical") {
     userData.sort((a, b) => a.username.localeCompare(b.username));
-  } else { // questions (default)
+  } else if (sortType === "questions") {
     userData.sort((a, b) => (b.totalSolved || 0) - (a.totalSolved || 0));
+  } else { // rating (default)
+    userData.sort((a, b) => {
+      // Handle cases where ranking might be null/undefined
+      const rankingA = a.ranking || Number.MAX_SAFE_INTEGER;
+      const rankingB = b.ranking || Number.MAX_SAFE_INTEGER;
+      return rankingA - rankingB; // Lower ranking number is better
+    });
   }
   
   // Clear container and re-append in sorted order
@@ -214,95 +222,31 @@ const loadUsers = async () => {
     // Wait for all users to load in parallel
     await Promise.all(fetchPromises);
     
-    // Sort after all users are loaded
+    // Sort after all users are loaded (will use default rating sort)
     sortUsers();
+    
+    // Store sorted user data locally for persistence
+    const sortedUserData = userData.map(user => ({
+      username: user.username,
+      totalSolved: user.totalSolved,
+      ranking: user.ranking,
+      easySolved: user.easySolved,
+      mediumSolved: user.mediumSolved,
+      hardSolved: user.hardSolved,
+      timestamp: Date.now()
+    }));
+    
+    chrome.storage.local.set({ sortedUserData });
   });
 };
 
-const addUser = (username) => {
-  if (!username) return;
-  chrome.storage.local.get(["usernames"], (result) => {
-    let usernames = result.usernames || [];
-    if (!usernames.includes(username)) {
-      usernames.push(username);
-      chrome.storage.local.set({ usernames }, () => {
-        loadUsers(); // Reload after adding
-      });
-    }
-  });
-};
-
-const removeUser = (username) => {
-  chrome.storage.local.get(["usernames"], (result) => {
-    let usernames = result.usernames || [];
-    usernames = usernames.filter((u) => u !== username);
-    chrome.storage.local.set({ usernames }, () => {
-      // Remove from userData as well
-      userData = userData.filter(u => u.username !== username);
-      loadUsers(); // Reload after removing
+// Function to load stored user data order on startup
+const loadStoredUserOrder = async () => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(['sortedUserData'], (result) => {
+      resolve(result.sortedUserData || []);
     });
   });
-};
-
-// Function to open LeetCode profile
-const openLeetCodeProfile = (username) => {
-  const profileUrl = `https://leetcode.com/u/${username}/`;
-  chrome.tabs.create({ url: profileUrl });
-};
-
-// Settings functions
-const loadSettings = () => {
-  chrome.storage.local.get([
-    'autoRefreshEnabled', 
-    'autoRefreshInterval', 
-    'notificationsEnabled'
-  ], (result) => {
-    document.getElementById('auto-refresh-enabled').checked = result.autoRefreshEnabled || false;
-    document.getElementById('refresh-interval').value = result.autoRefreshInterval || 15;
-    document.getElementById('notifications-enabled').checked = result.notificationsEnabled !== false;
-    
-    // Show/hide interval setting based on auto-refresh state
-    toggleIntervalSetting();
-  });
-};
-
-const saveSettings = () => {
-  const autoRefreshEnabled = document.getElementById('auto-refresh-enabled').checked;
-  const autoRefreshInterval = parseInt(document.getElementById('refresh-interval').value);
-  const notificationsEnabled = document.getElementById('notifications-enabled').checked;
-
-  chrome.storage.local.set({
-    autoRefreshEnabled,
-    autoRefreshInterval,
-    notificationsEnabled
-  });
-
-  // Show/hide interval setting
-  toggleIntervalSetting();
-};
-
-const toggleIntervalSetting = () => {
-  const autoRefreshEnabled = document.getElementById('auto-refresh-enabled').checked;
-  const intervalSetting = document.getElementById('refresh-interval-setting');
-  intervalSetting.style.display = autoRefreshEnabled ? 'block' : 'none';
-};
-
-const testNotification = () => {
-  console.log("Test notification button clicked");
-  
-  // Send message to background script to create notification
-  chrome.runtime.sendMessage(
-    { action: 'testNotification' },
-    (response) => {
-      if (chrome.runtime.lastError) {
-        console.error("Runtime error:", chrome.runtime.lastError);
-      } else if (response && response.success) {
-        console.log("Test notification sent successfully:", response.notificationId);
-      } else {
-        console.error("Test notification failed:", response?.error);
-      }
-    }
-  );
 };
 
 document.addEventListener("DOMContentLoaded", () => {
