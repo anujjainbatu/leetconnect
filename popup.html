@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LeetCode Stats Viewer</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="container">
+    <h1>🏆 LeetCode Stats</h1>
+    <input type="text" id="username" placeholder="Enter LeetCode Username" />
+    <button id="add-user">Add User</button>
+    
+    <div id="controls-row">
+      <div id="sort-options">
+        <label for="sort-select">Sort:</label>
+        <select id="sort-select">
+          <option value="questions">Questions</option>
+          <option value="alphabetical">Alphabetically</option>
+        </select>
+      </div>
+      
+      <button id="settings-toggle" class="settings-btn">⚙️</button>
+    </div>
+
+    <!-- Settings Section -->
+    <div id="settings-section">
+      <div id="settings-panel" class="settings-panel hidden">
+        
+        <div class="setting-item">
+          <label class="setting-label">
+            <input type="checkbox" id="auto-refresh-enabled" />
+            Auto Refresh
+          </label>
+          <div class="setting-description">Automatically check for updates</div>
+        </div>
+
+        <div class="setting-item" id="refresh-interval-setting">
+          <label class="setting-label">Refresh Interval:</label>
+          <select id="refresh-interval">
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15" selected>15 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="60">1 hour</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label class="setting-label">
+            <input type="checkbox" id="notifications-enabled" checked />
+            Notifications
+          </label>
+          <div class="setting-description">Get reminders and friend updates</div>
+        </div>
+
+        <div class="setting-item">
+          <button id="test-notification" class="test-btn">Test Notification</button>
+        </div>
+
+      </div>
+    </div>
+    
+    <div id="user-stats"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

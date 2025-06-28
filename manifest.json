@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode Stats Viewer",
+  "version": "1.2",
+  "description": "View LeetCode user stats and manage friends directly from your browser.",
+  "permissions": ["storage", "scripting", "activeTab", "alarms", "notifications"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "host_permissions": [
+    "https://leetcode-api-faisalshohag.vercel.app/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
