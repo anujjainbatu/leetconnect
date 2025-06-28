@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "LeetCode Stats Viewer",
+  "name": "LeetConnect",
   "version": "1.2",
-  "description": "View LeetCode user stats and manage friends directly from your browser.",
+  "description": "Connect with friends and track LeetCode progress together - view stats, get notifications, and stay motivated.",
   "permissions": ["storage", "scripting", "activeTab", "alarms", "notifications"],
   "action": {
     "default_popup": "popup.html",

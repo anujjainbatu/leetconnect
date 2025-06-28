@@ -540,3 +540,38 @@ input[type="checkbox"] {
   }
 }
 
+/* Footer styling */
+#footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+#footer p {
+  margin: 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+#footer a {
+  color: #FFA116;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+#footer a:hover {
+  color: #FFD700;
+  background: rgba(255, 161, 22, 0.1);
+  text-decoration: none;
+  transform: scale(1.05);
+}
+
+#footer a:active {
+  transform: scale(0.98);
+}
+
