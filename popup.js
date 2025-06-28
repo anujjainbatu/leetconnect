@@ -6,12 +6,22 @@ let userData = [];
 const fetchStats = async (username) => {
   const box = document.createElement("div");
   box.className = "user-box";
-  box.innerHTML = `
-    <div class="username clickable" data-username="${username}">${username}</div>
-    <div class="loader"></div>
-  `;
+  
+  // First, try to load cached data
+  const cachedData = await getCachedUserData(username);
+  
+  if (cachedData) {
+    // Show cached data immediately
+    renderUserBox(box, username, cachedData, true); // true indicates loading state
+  } else {
+    // Show loading state if no cached data
+    box.innerHTML = `
+      <div class="username clickable" data-username="${username}">${username}</div>
+      <div class="loader"></div>
+    `;
+  }
 
-  // Add the box to the container immediately to show the loader
+  // Add the box to the container immediately
   const statsContainer = document.getElementById("user-stats");
   statsContainer.appendChild(box);
 
@@ -20,6 +30,9 @@ const fetchStats = async (username) => {
     const data = await res.json();
 
     if (!data || !data.totalSolved) throw new Error("Invalid response");
+
+    // Calculate ranking change if we have previous data
+    const rankingChange = cachedData ? calculateRankingChange(cachedData.ranking, data.ranking) : null;
 
     // Store user data for sorting
     const userInfo = {
@@ -32,6 +45,7 @@ const fetchStats = async (username) => {
       totalMedium: data.totalMedium,
       hardSolved: data.hardSolved,
       totalHard: data.totalHard,
+      rankingChange,
       box
     };
 
@@ -43,32 +57,11 @@ const fetchStats = async (username) => {
       userData.push(userInfo);
     }
 
-    box.innerHTML = `
-      <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
-      <div class="stats-container">
-        <div class="stat-group">
-          <div class="stat-label">Total</div>
-          <div class="stat-value total">${data.totalSolved}</div>
-        </div>
-        <div class="stat-group">
-          <div class="stat-label">Easy</div>
-          <div class="stat-value easy">${data.easySolved}</div>
-        </div>
-        <div class="stat-group">
-          <div class="stat-label">Medium</div>
-          <div class="stat-value medium">${data.mediumSolved}</div>
-        </div>
-        <div class="stat-group">
-          <div class="stat-label">Hard</div>
-          <div class="stat-value hard">${data.hardSolved}</div>
-        </div>
-        <div class="stat-group">
-          <div class="stat-label">Rating</div>
-          <div class="stat-value ranking">${data.ranking ? data.ranking.toLocaleString() : 'N/A'}</div>
-        </div>
-      </div>
-      <button class="remove-user" data-username="${username}">×</button>
-    `;
+    // Render updated data
+    renderUserBox(box, username, data, false, rankingChange);
+
+    // Cache the new data
+    await cacheUserData(username, data);
 
     // Store stats for comparison in background
     chrome.storage.local.get(['lastStats'], (result) => {
@@ -79,16 +72,12 @@ const fetchStats = async (username) => {
 
   } catch (err) {
     console.error(err);
-    box.innerHTML = `
-      <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
-      <div class="error-state">⚠️ Error loading data</div>
-      <button class="remove-user" data-username="${username}">×</button>
-    `;
+    renderErrorState(box, username);
     
     // Store error state for consistency
     const userInfo = {
       username,
-      totalSolved: 0,
+      totalSolved: cachedData?.totalSolved || 0,
       error: true,
       box
     };
@@ -102,6 +91,91 @@ const fetchStats = async (username) => {
   }
 
   return box;
+};
+
+// Helper function to get cached user data
+const getCachedUserData = async (username) => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get([`user_${username}`], (result) => {
+      resolve(result[`user_${username}`] || null);
+    });
+  });
+};
+
+// Helper function to cache user data
+const cacheUserData = async (username, data) => {
+  const cacheData = {
+    ...data,
+    timestamp: Date.now()
+  };
+  chrome.storage.local.set({ [`user_${username}`]: cacheData });
+};
+
+// Helper function to calculate ranking change
+const calculateRankingChange = (oldRanking, newRanking) => {
+  if (!oldRanking || !newRanking) return null;
+  
+  const change = oldRanking - newRanking; // Positive means rank improved (lower number is better)
+  return {
+    value: Math.abs(change),
+    direction: change > 0 ? 'up' : change < 0 ? 'down' : 'same'
+  };
+};
+
+// Helper function to render user box with data
+const renderUserBox = (box, username, data, isLoading = false, rankingChange = null) => {
+  const loadingOverlay = isLoading ? '<div class="loading-overlay"></div>' : '';
+  const rankingChangeIndicator = rankingChange ? renderRankingChange(rankingChange) : '';
+  
+  box.innerHTML = `
+    <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
+    <div class="stats-container">
+      <div class="stat-group">
+        <div class="stat-label">Total</div>
+        <div class="stat-value total">${data.totalSolved}</div>
+      </div>
+      <div class="stat-group">
+        <div class="stat-label">Easy</div>
+        <div class="stat-value easy">${data.easySolved}</div>
+      </div>
+      <div class="stat-group">
+        <div class="stat-label">Medium</div>
+        <div class="stat-value medium">${data.mediumSolved}</div>
+      </div>
+      <div class="stat-group">
+        <div class="stat-label">Hard</div>
+        <div class="stat-value hard">${data.hardSolved}</div>
+      </div>
+      <div class="stat-group">
+        <div class="stat-label">Rating</div>
+        <div class="stat-value ranking">
+          ${data.ranking ? data.ranking.toLocaleString() : 'N/A'}
+          ${rankingChangeIndicator}
+        </div>
+      </div>
+    </div>
+    <button class="remove-user" data-username="${username}">×</button>
+    ${loadingOverlay}
+  `;
+};
+
+// Helper function to render ranking change indicator
+const renderRankingChange = (rankingChange) => {
+  if (!rankingChange || rankingChange.direction === 'same') return '';
+  
+  const arrow = rankingChange.direction === 'up' ? '↗️' : '↘️';
+  const colorClass = rankingChange.direction === 'up' ? 'rank-up' : 'rank-down';
+  
+  return `<div class="ranking-change ${colorClass}" title="Ranking changed by ${rankingChange.value}">${arrow}${rankingChange.value}</div>`;
+};
+
+// Helper function to render error state
+const renderErrorState = (box, username) => {
+  box.innerHTML = `
+    <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
+    <div class="error-state">⚠️ Error loading data</div>
+    <button class="remove-user" data-username="${username}">×</button>
+  `;
 };
 
 const sortUsers = () => {
@@ -132,10 +206,13 @@ const loadUsers = async () => {
   chrome.storage.local.get(["usernames"], async (result) => {
     const usernames = result.usernames || [];
     
-    // Load all users first
-    for (let username of usernames) {
-      await fetchStats(username);
-    }
+    // Create all user boxes immediately with loading states
+    const fetchPromises = usernames.map(username => {
+      return fetchStats(username); // This already handles parallel loading
+    });
+    
+    // Wait for all users to load in parallel
+    await Promise.all(fetchPromises);
     
     // Sort after all users are loaded
     sortUsers();

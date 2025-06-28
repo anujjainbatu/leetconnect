@@ -237,6 +237,7 @@ input[type="checkbox"] {
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
+  position: relative; /* Added for overlay positioning */
 }
 
 .user-box:hover {
@@ -404,6 +405,70 @@ input[type="checkbox"] {
   from {
     opacity: 0;
     transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced loading overlay for better visibility */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  backdrop-filter: blur(3px);
+  z-index: 10;
+}
+
+.loading-overlay::after {
+  content: '';
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top: 3px solid #FFA116;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+/* Ensure cached data is slightly dimmed when loading */
+.user-box:has(.loading-overlay) .stats-container {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+/* Ranking change indicator */
+.ranking-change {
+  font-size: 9px;
+  font-weight: 600;
+  margin-top: 2px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  display: inline-block;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.ranking-change.rank-up {
+  color: #00b8a3;
+  background: rgba(0, 184, 163, 0.1);
+}
+
+.ranking-change.rank-down {
+  color: #ff375f;
+  background: rgba(255, 55, 95, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
   }
   to {
     opacity: 1;
