@@ -160,6 +160,17 @@ const renderUserBox = (box, username, data, isLoading = false, rankingChange = n
   `;
 };
 
+// Add a function to update ranking positions after sorting
+const updateRankingPositions = () => {
+  userData.forEach((user, index) => {
+    if (user.box && user.ranking) {
+      // Position is index + 1 for 1-based ranking
+      const position = index + 1;
+      user.box.setAttribute('data-rank', position.toString());
+    }
+  });
+};
+
 // Helper function to render ranking change indicator
 const renderRankingChange = (rankingChange) => {
   if (!rankingChange || rankingChange.direction === 'same') return '';
@@ -204,6 +215,9 @@ const sortUsers = () => {
       statsContainer.appendChild(user.box);
     }
   });
+  
+  // Update ranking positions for medal indicators
+  updateRankingPositions();
 };
 
 const loadUsers = async () => {
@@ -211,11 +225,29 @@ const loadUsers = async () => {
   statsContainer.innerHTML = "";
   userData = []; // Reset user data
   
-  chrome.storage.local.get(["usernames"], async (result) => {
+  chrome.storage.local.get(["usernames", "sortedUserData"], async (result) => {
     const usernames = result.usernames || [];
+    const sortedUserData = result.sortedUserData || [];
     
-    // Create all user boxes immediately with loading states
-    const fetchPromises = usernames.map(username => {
+    // Create a map of last known order based on stored sorted data
+    const lastOrderMap = new Map();
+    sortedUserData.forEach((user, index) => {
+      lastOrderMap.set(user.username, index);
+    });
+    
+    // Sort usernames based on last known order, then alphabetically for new users
+    const orderedUsernames = usernames.sort((a, b) => {
+      const orderA = lastOrderMap.get(a) ?? Number.MAX_SAFE_INTEGER;
+      const orderB = lastOrderMap.get(b) ?? Number.MAX_SAFE_INTEGER;
+      
+      if (orderA === orderB) {
+        return a.localeCompare(b); // Alphabetical for new users
+      }
+      return orderA - orderB;
+    });
+    
+    // Create all user boxes immediately with loading states in the correct order
+    const fetchPromises = orderedUsernames.map(username => {
       return fetchStats(username); // This already handles parallel loading
     });
     
@@ -226,7 +258,7 @@ const loadUsers = async () => {
     sortUsers();
     
     // Store sorted user data locally for persistence
-    const sortedUserData = userData.map(user => ({
+    const newSortedUserData = userData.map(user => ({
       username: user.username,
       totalSolved: user.totalSolved,
       ranking: user.ranking,
@@ -236,7 +268,7 @@ const loadUsers = async () => {
       timestamp: Date.now()
     }));
     
-    chrome.storage.local.set({ sortedUserData });
+    chrome.storage.local.set({ sortedUserData: newSortedUserData });
   });
 };
 
@@ -300,3 +332,115 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+const addUser = async (username) => {
+  // Check if user already exists
+  chrome.storage.local.get(["usernames"], (result) => {
+    const usernames = result.usernames || [];
+    if (usernames.includes(username)) {
+      alert("User already added!");
+      return;
+    }
+    
+    // Add new user
+    usernames.push(username);
+    chrome.storage.local.set({ usernames }, () => {
+      // Fetch stats for the new user
+      fetchStats(username).then(() => {
+        // Re-sort after adding new user
+        sortUsers();
+        
+        // Update stored sorted data
+        const newSortedUserData = userData.map(user => ({
+          username: user.username,
+          totalSolved: user.totalSolved,
+          ranking: user.ranking,
+          easySolved: user.easySolved,
+          mediumSolved: user.mediumSolved,
+          hardSolved: user.hardSolved,
+          timestamp: Date.now()
+        }));
+        
+        chrome.storage.local.set({ sortedUserData: newSortedUserData });
+      });
+    });
+  });
+};
+
+const removeUser = (username) => {
+  chrome.storage.local.get(["usernames"], (result) => {
+    const usernames = result.usernames || [];
+    const updatedUsernames = usernames.filter(u => u !== username);
+    
+    chrome.storage.local.set({ usernames: updatedUsernames }, () => {
+      // Remove from userData array
+      userData = userData.filter(u => u.username !== username);
+      
+      // Remove from DOM
+      const userBox = document.querySelector(`[data-username="${username}"]`)?.closest('.user-box');
+      if (userBox) {
+        userBox.remove();
+      }
+      
+      // Update ranking positions
+      updateRankingPositions();
+      
+      // Update stored sorted data
+      const newSortedUserData = userData.map(user => ({
+        username: user.username,
+        totalSolved: user.totalSolved,
+        ranking: user.ranking,
+        easySolved: user.easySolved,
+        mediumSolved: user.mediumSolved,
+        hardSolved: user.hardSolved,
+        timestamp: Date.now()
+      }));
+      
+      chrome.storage.local.set({ sortedUserData: newSortedUserData });
+      
+      // Clear cached data for removed user
+      chrome.storage.local.remove([`user_${username}`]);
+    });
+  });
+};
+
+const openLeetCodeProfile = (username) => {
+  chrome.tabs.create({
+    url: `https://leetcode.com/u/${username}/`
+  });
+};
+
+// Settings functions
+const loadSettings = () => {
+  chrome.storage.local.get([
+    'autoRefreshEnabled',
+    'autoRefreshInterval', 
+    'notificationsEnabled'
+  ], (result) => {
+    document.getElementById('auto-refresh-enabled').checked = result.autoRefreshEnabled || false;
+    document.getElementById('refresh-interval').value = result.autoRefreshInterval || 15;
+    document.getElementById('notifications-enabled').checked = result.notificationsEnabled !== false; // Default to true
+  });
+};
+
+const saveSettings = () => {
+  const autoRefreshEnabled = document.getElementById('auto-refresh-enabled').checked;
+  const autoRefreshInterval = parseInt(document.getElementById('refresh-interval').value);
+  const notificationsEnabled = document.getElementById('notifications-enabled').checked;
+  
+  chrome.storage.local.set({
+    autoRefreshEnabled,
+    autoRefreshInterval,
+    notificationsEnabled
+  });
+};
+
+const testNotification = () => {
+  chrome.runtime.sendMessage({ action: 'testNotification' }, (response) => {
+    if (response && response.success) {
+      console.log('Test notification sent successfully');
+    } else {
+      console.error('Failed to send test notification:', response?.error);
+    }
+  });
+};
