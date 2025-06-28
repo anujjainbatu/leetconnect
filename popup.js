@@ -123,6 +123,16 @@ const calculateRankingChange = (oldRanking, newRanking) => {
   };
 };
 
+// Helper function to render ranking change indicator
+const renderRankingChange = (rankingChange) => {
+  if (!rankingChange || rankingChange.direction === 'same') return '';
+  
+  const arrow = rankingChange.direction === 'up' ? '▲' : '▼';
+  const colorClass = rankingChange.direction === 'up' ? 'rank-up' : 'rank-down';
+  
+  return `<div class="ranking-change ${colorClass}" title="Ranking changed by ${rankingChange.value}">${arrow}${rankingChange.value}</div>`;
+};
+
 // Helper function to render user box with data
 const renderUserBox = (box, username, data, isLoading = false, rankingChange = null) => {
   const loadingOverlay = isLoading ? '<div class="loading-overlay"></div>' : '';
@@ -150,7 +160,7 @@ const renderUserBox = (box, username, data, isLoading = false, rankingChange = n
       <div class="stat-group">
         <div class="stat-label">Rating</div>
         <div class="stat-value ranking">
-          ${data.ranking ? data.ranking.toLocaleString() : 'N/A'}
+          <div>${data.ranking ? data.ranking.toLocaleString() : 'N/A'}</div>
           ${rankingChangeIndicator}
         </div>
       </div>
@@ -169,16 +179,6 @@ const updateRankingPositions = () => {
       user.box.setAttribute('data-rank', position.toString());
     }
   });
-};
-
-// Helper function to render ranking change indicator
-const renderRankingChange = (rankingChange) => {
-  if (!rankingChange || rankingChange.direction === 'same') return '';
-  
-  const arrow = rankingChange.direction === 'up' ? '↗️' : '↘️';
-  const colorClass = rankingChange.direction === 'up' ? 'rank-up' : 'rank-down';
-  
-  return `<div class="ranking-change ${colorClass}" title="Ranking changed by ${rankingChange.value}">${arrow}${rankingChange.value}</div>`;
 };
 
 // Helper function to render error state
