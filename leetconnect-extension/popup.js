@@ -77,8 +77,8 @@ const fetchStats = async (username, forceRefresh = false) => {
       throw new Error("USER_NOT_FOUND");
     }
 
-    // Calculate ranking change if we have previous data
-    const rankingChange = cachedData ? calculateRankingChange(cachedData.ranking, data.ranking) : null;
+    // Calculate all stat changes if we have previous data
+    const statChanges = cachedData ? calculateStatChanges(cachedData, data) : null;
 
     // Store user data for sorting
     const userInfo = {
@@ -91,7 +91,7 @@ const fetchStats = async (username, forceRefresh = false) => {
       totalMedium: data.totalMedium,
       hardSolved: data.hardSolved,
       totalHard: data.totalHard,
-      rankingChange,
+      statChanges,
       box
     };
 
@@ -103,8 +103,8 @@ const fetchStats = async (username, forceRefresh = false) => {
       userData.push(userInfo);
     }
 
-    // Render updated data
-    renderUserBox(box, username, data, false, rankingChange);
+    // Render updated data with all changes
+    renderUserBox(box, username, data, false, statChanges);
 
     // Cache the new data
     await cacheUserData(username, data);
@@ -180,6 +180,41 @@ const calculateRankingChange = (oldRanking, newRanking) => {
   };
 };
 
+// Helper function to calculate all stat changes
+const calculateStatChanges = (oldData, newData) => {
+  if (!oldData || !newData) return null;
+  
+  const changes = {};
+  
+  // Calculate ranking change
+  if (oldData.ranking && newData.ranking) {
+    const rankingChange = oldData.ranking - newData.ranking; // Positive means rank improved
+    if (Math.abs(rankingChange) > 0) {
+      changes.ranking = {
+        value: Math.abs(rankingChange),
+        direction: rankingChange > 0 ? 'up' : 'down'
+      };
+    }
+  }
+  
+  // Calculate problem count changes
+  const statKeys = ['totalSolved', 'easySolved', 'mediumSolved', 'hardSolved'];
+  statKeys.forEach(key => {
+    const oldValue = oldData[key] || 0;
+    const newValue = newData[key] || 0;
+    const change = newValue - oldValue;
+    
+    if (change > 0) {
+      changes[key] = {
+        value: change,
+        direction: 'up'
+      };
+    }
+  });
+  
+  return Object.keys(changes).length > 0 ? changes : null;
+};
+
 // Helper function to render ranking change indicator
 const renderRankingChange = (rankingChange) => {
   if (!rankingChange || rankingChange.direction === 'same') return '';
@@ -190,35 +225,69 @@ const renderRankingChange = (rankingChange) => {
   return `<div class="ranking-change ${colorClass}" title="Ranking changed by ${rankingChange.value}">${arrow}${rankingChange.value}</div>`;
 };
 
+// Helper function to render stat change indicator
+const renderStatChange = (change, type = 'default') => {
+  if (!change) return '';
+  
+  const arrow = change.direction === 'up' ? '▲' : '▼';
+  const colorClass = type === 'ranking' 
+    ? (change.direction === 'up' ? 'rank-up' : 'rank-down')
+    : 'stat-up'; // All problem count increases are positive
+  
+  const title = type === 'ranking' 
+    ? `Ranking changed by ${change.value}`
+    : `+${change.value} new problems solved`;
+  
+  return `<div class="stat-change ${colorClass}" title="${title}">${arrow}${change.value}</div>`;
+};
+
 // Helper function to render user box with data
-const renderUserBox = (box, username, data, isLoading = false, rankingChange = null) => {
+const renderUserBox = (box, username, data, isLoading = false, statChanges = null) => {
   const loadingOverlay = isLoading ? '<div class="loading-overlay"></div>' : '';
-  const rankingChangeIndicator = rankingChange ? renderRankingChange(rankingChange) : '';
+  
+  // Get individual change indicators
+  const rankingChange = statChanges?.ranking ? renderStatChange(statChanges.ranking, 'ranking') : '';
+  const totalChange = statChanges?.totalSolved ? renderStatChange(statChanges.totalSolved, 'total') : '';
+  const easyChange = statChanges?.easySolved ? renderStatChange(statChanges.easySolved, 'easy') : '';
+  const mediumChange = statChanges?.mediumSolved ? renderStatChange(statChanges.mediumSolved, 'medium') : '';
+  const hardChange = statChanges?.hardSolved ? renderStatChange(statChanges.hardSolved, 'hard') : '';
   
   box.innerHTML = `
     <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
     <div class="stats-container">
       <div class="stat-group">
         <div class="stat-label">Total</div>
-        <div class="stat-value total">${data.totalSolved}</div>
+        <div class="stat-value total">
+          <div>${data.totalSolved}</div>
+          ${totalChange}
+        </div>
       </div>
       <div class="stat-group">
         <div class="stat-label">Easy</div>
-        <div class="stat-value easy">${data.easySolved}</div>
+        <div class="stat-value easy">
+          <div>${data.easySolved}</div>
+          ${easyChange}
+        </div>
       </div>
       <div class="stat-group">
         <div class="stat-label">Medium</div>
-        <div class="stat-value medium">${data.mediumSolved}</div>
+        <div class="stat-value medium">
+          <div>${data.mediumSolved}</div>
+          ${mediumChange}
+        </div>
       </div>
       <div class="stat-group">
         <div class="stat-label">Hard</div>
-        <div class="stat-value hard">${data.hardSolved}</div>
+        <div class="stat-value hard">
+          <div>${data.hardSolved}</div>
+          ${hardChange}
+        </div>
       </div>
       <div class="stat-group">
         <div class="stat-label">Rating</div>
         <div class="stat-value ranking">
           <div>${data.ranking ? data.ranking.toLocaleString() : 'N/A'}</div>
-          ${rankingChangeIndicator}
+          ${rankingChange}
         </div>
       </div>
     </div>

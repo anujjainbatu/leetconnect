@@ -324,7 +324,13 @@ input[type="checkbox"] {
   font-weight: 700;
   font-size: 11px;
   text-align: center;
+  color: #e8e8e8;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  line-height: 1.2;
 }
 
 .stat-value.total {
@@ -343,8 +349,8 @@ input[type="checkbox"] {
   line-height: 1.2;
 }
 
-/* Cleaner ranking change indicator */
-.ranking-change {
+/* Stat change indicators */
+.stat-change {
   font-size: 7px;
   font-weight: 500;
   padding: 0px 2px;
@@ -354,54 +360,53 @@ input[type="checkbox"] {
   white-space: nowrap;
   min-height: 8px;
   line-height: 8px;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-.ranking-change.rank-up {
+.stat-change.rank-up {
   color: #00b8a3;
 }
 
-.ranking-change.rank-down {
+.stat-change.rank-down {
   color: #ff375f;
 }
 
-/* Remove medal emojis and special styling for top 3 */
-.user-box[data-rank="1"] .stat-value.ranking::before,
-.user-box[data-rank="2"] .stat-value.ranking::before,
-.user-box[data-rank="3"] .stat-value.ranking::before {
-  content: none;
+.stat-change.stat-up {
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
 }
 
-.user-box[data-rank="1"],
-.user-box[data-rank="2"],
-.user-box[data-rank="3"] {
-  border-left: none;
-  background: rgba(255, 255, 255, 0.08);
+/* Difficulty-specific colors for stat changes */
+.stat-value.easy .stat-change.stat-up {
+  color: #00b8a3;
+  background: rgba(0, 184, 163, 0.1);
 }
 
-.remove-user {
-  background: rgba(220, 53, 69, 0.2);
-  border: 1px solid rgba(220, 53, 69, 0.4);
-  color: #ff6b7a;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 4px 6px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-  box-shadow: none;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-left: auto;
+.stat-value.medium .stat-change.stat-up {
+  color: #FFA116;
+  background: rgba(255, 161, 22, 0.1);
 }
 
-.remove-user:hover {
-  background: rgba(220, 53, 69, 0.3);
-  border-color: #dc3545;
-  transform: scale(1.1);
+.stat-value.hard .stat-change.stat-up {
+  color: #ff375f;
+  background: rgba(255, 55, 95, 0.1);
+}
+
+.stat-value.total .stat-change.stat-up {
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.15);
+}
+
+/* Animation for stat changes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .loader {
