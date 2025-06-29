@@ -3,15 +3,47 @@ const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
 // Store user data globally for sorting
 let userData = [];
 
-const fetchStats = async (username) => {
+// Cache duration in milliseconds (15 minutes)
+const CACHE_DURATION = 15 * 60 * 1000;
+
+const fetchStats = async (username, forceRefresh = false) => {
   const box = document.createElement("div");
   box.className = "user-box";
   
-  // First, try to load cached data
+  // Check if we should use cached data
   const cachedData = await getCachedUserData(username);
+  const shouldUseCachedData = cachedData && !forceRefresh && isCacheValid(cachedData.timestamp);
   
+  if (shouldUseCachedData) {
+    // Use cached data without making API call
+    renderUserBox(box, username, cachedData, false);
+    
+    // Store user data for sorting
+    const userInfo = {
+      username,
+      totalSolved: cachedData.totalSolved,
+      ranking: cachedData.ranking,
+      easySolved: cachedData.easySolved,
+      totalEasy: cachedData.totalEasy,
+      mediumSolved: cachedData.mediumSolved,
+      totalMedium: cachedData.totalMedium,
+      hardSolved: cachedData.hardSolved,
+      totalHard: cachedData.totalHard,
+      box
+    };
+    
+    const existingIndex = userData.findIndex(u => u.username === username);
+    if (existingIndex >= 0) {
+      userData[existingIndex] = userInfo;
+    } else {
+      userData.push(userInfo);
+    }
+    
+    return box;
+  }
+  
+  // Show cached data immediately if available, then update
   if (cachedData) {
-    // Show cached data immediately
     renderUserBox(box, username, cachedData, true); // true indicates loading state
   } else {
     // Show loading state if no cached data
@@ -78,7 +110,7 @@ const fetchStats = async (username) => {
     const userInfo = {
       username,
       totalSolved: cachedData?.totalSolved || 0,
-      ranking: cachedData?.ranking || Number.MAX_SAFE_INTEGER, // Set high ranking for error state
+      ranking: cachedData?.ranking || Number.MAX_SAFE_INTEGER,
       error: true,
       box
     };
@@ -92,6 +124,12 @@ const fetchStats = async (username) => {
   }
 
   return box;
+};
+
+// Helper function to check if cache is valid
+const isCacheValid = (timestamp) => {
+  if (!timestamp) return false;
+  return (Date.now() - timestamp) < CACHE_DURATION;
 };
 
 // Helper function to get cached user data
@@ -220,7 +258,7 @@ const sortUsers = () => {
   updateRankingPositions();
 };
 
-const loadUsers = async () => {
+const loadUsers = async (forceRefresh = false) => {
   const statsContainer = document.getElementById("user-stats");
   statsContainer.innerHTML = "";
   userData = []; // Reset user data
@@ -246,15 +284,15 @@ const loadUsers = async () => {
       return orderA - orderB;
     });
     
-    // Create all user boxes immediately with loading states in the correct order
+    // Create all user boxes with caching logic
     const fetchPromises = orderedUsernames.map(username => {
-      return fetchStats(username); // This already handles parallel loading
+      return fetchStats(username, forceRefresh);
     });
     
-    // Wait for all users to load in parallel
+    // Wait for all users to load
     await Promise.all(fetchPromises);
     
-    // Sort after all users are loaded (will use default rating sort)
+    // Sort after all users are loaded
     sortUsers();
     
     // Store sorted user data locally for persistence
@@ -272,17 +310,22 @@ const loadUsers = async () => {
   });
 };
 
-// Function to load stored user data order on startup
-const loadStoredUserOrder = async () => {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(['sortedUserData'], (result) => {
-      resolve(result.sortedUserData || []);
-    });
-  });
+// Refresh all data function
+const refreshAllData = async () => {
+  const refreshBtn = document.getElementById("refresh-data");
+  refreshBtn.classList.add("refreshing");
+  refreshBtn.disabled = true;
+  
+  try {
+    await loadUsers(true); // Force refresh
+  } finally {
+    refreshBtn.classList.remove("refreshing");
+    refreshBtn.disabled = false;
+  }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadUsers();
+  loadUsers(); // Load without forcing refresh on startup
   loadSettings();
 
   // Main functionality event listeners
@@ -294,6 +337,9 @@ document.addEventListener("DOMContentLoaded", () => {
       input.value = "";
     }
   });
+
+  // Add refresh button event listener
+  document.getElementById("refresh-data").addEventListener("click", refreshAllData);
 
   document.getElementById("user-stats").addEventListener("click", (e) => {
     if (e.target.classList.contains("remove-user")) {
@@ -345,8 +391,8 @@ const addUser = async (username) => {
     // Add new user
     usernames.push(username);
     chrome.storage.local.set({ usernames }, () => {
-      // Fetch stats for the new user
-      fetchStats(username).then(() => {
+      // Fetch stats for the new user (force refresh for new users)
+      fetchStats(username, true).then(() => {
         // Re-sort after adding new user
         sortUsers();
         
