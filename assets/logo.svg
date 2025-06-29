@@ -1,0 +1,211 @@
+<svg viewBox="0 0 350 140" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- CSS for theme adaptation -->
+    <style>
+      .logo-container {
+        transition: all 0.3s ease;
+      }
+      
+      /* Light theme (default) */
+      .primary-text { fill: #1A202C; }
+      .secondary-text { fill: #4A5568; }
+      .tertiary-text { fill: #718096; }
+      .quaternary-text { fill: #A0AEC0; }
+      .version-text { fill: #CBD5E0; }
+      .analytics-bar { fill: #718096; }
+      .analytics-light { fill: #A0AEC0; }
+      .progress-bg { fill: #E2E8F0; }
+      .binary-code { fill: #CBD5E0; }
+      .connection-line { stroke: #FFA116; }
+      .icon-shadow { filter: url(#dropShadowLight); }
+      .text-shadow { filter: url(#textShadowLight); }
+      
+      /* Dark theme adaptations */
+      @media (prefers-color-scheme: dark) {
+        .primary-text { fill: #F7FAFC; }
+        .secondary-text { fill: #E2E8F0; }
+        .tertiary-text { fill: #CBD5E0; }
+        .quaternary-text { fill: #A0AEC0; }
+        .version-text { fill: #718096; }
+        .analytics-bar { fill: #A0AEC0; }
+        .analytics-light { fill: #CBD5E0; }
+        .progress-bg { fill: #4A5568; }
+        .binary-code { fill: #718096; }
+        .connection-line { stroke: #FFB84D; }
+        .icon-shadow { filter: url(#dropShadowDark); }
+        .text-shadow { filter: url(#textShadowDark); }
+      }
+      
+      /* Manual dark theme class override */
+      .dark-theme .primary-text { fill: #F7FAFC; }
+      .dark-theme .secondary-text { fill: #E2E8F0; }
+      .dark-theme .tertiary-text { fill: #CBD5E0; }
+      .dark-theme .quaternary-text { fill: #A0AEC0; }
+      .dark-theme .version-text { fill: #718096; }
+      .dark-theme .analytics-bar { fill: #A0AEC0; }
+      .dark-theme .analytics-light { fill: #CBD5E0; }
+      .dark-theme .progress-bg { fill: #4A5568; }
+      .dark-theme .binary-code { fill: #718096; }
+      .dark-theme .connection-line { stroke: #FFB84D; }
+      .dark-theme .icon-shadow { filter: url(#dropShadowDark); }
+      .dark-theme .text-shadow { filter: url(#textShadowDark); }
+    </style>
+    
+    <!-- Enhanced gradient for better dark theme visibility -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="35%" style="stop-color:#FFB84D;stop-opacity:1" />
+      <stop offset="65%" style="stop-color:#FFA116;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E6900E;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Dark theme gradient variant -->
+    <linearGradient id="primaryGradientDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFED4E;stop-opacity:1" />
+      <stop offset="35%" style="stop-color:#FFC107;stop-opacity:1" />
+      <stop offset="65%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Inner glow for both themes -->
+    <radialGradient id="innerGlow" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
+    </radialGradient>
+    
+    <radialGradient id="innerGlowDark" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Light theme shadows -->
+    <filter id="dropShadowLight" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="3" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.15"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Dark theme shadows -->
+    <filter id="dropShadowDark" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="4" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.3"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Text shadows for both themes -->
+    <filter id="textShadowLight" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1" flood-color="#00000015" stdDeviation="0.5"/>
+    </filter>
+    
+    <filter id="textShadowDark" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1" flood-color="#00000030" stdDeviation="1"/>
+    </filter>
+    
+    <!-- Glow effect for dark theme -->
+    <filter id="iconGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <g class="logo-container">
+    <!-- Main icon with adaptive styling -->
+    <circle cx="50" cy="70" r="42" fill="url(#primaryGradient)" class="icon-shadow"/>
+    <circle cx="50" cy="70" r="42" fill="url(#innerGlow)" class="icon-inner-glow"/>
+    <circle cx="50" cy="70" r="41" fill="none" stroke="#FFFFFF" stroke-width="0.5" opacity="0.4"/>
+    
+    <!-- Enhanced chain links with better contrast -->
+    <ellipse cx="38" cy="65" rx="8" ry="12" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.98"/>
+    <ellipse cx="38" cy="65" rx="5.5" ry="9.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+    
+    <ellipse cx="62" cy="75" rx="8" ry="12" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.98"/>
+    <ellipse cx="62" cy="75" rx="5.5" ry="9.5" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+    
+    <!-- Connection highlight -->
+    <ellipse cx="50" cy="70" rx="4" ry="6" fill="#FFFFFF" opacity="0.25"/>
+    
+    <!-- Code brackets with increased contrast -->
+    <text x="43" y="58" font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" 
+          font-size="11" font-weight="700" fill="#FFFFFF" opacity="0.92">{</text>
+    <text x="52" y="58" font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" 
+          font-size="11" font-weight="700" fill="#FFFFFF" opacity="0.92">}</text>
+    
+    <!-- User icon with enhanced visibility -->
+    <circle cx="50" cy="78" r="3.5" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M44 85 Q50 81 56 85 L56 88.5 Q50 92.5 44 88.5 Z" fill="#FFFFFF" opacity="0.95"/>
+    
+    <!-- Connection dots -->
+    <circle cx="48" cy="75" r="0.8" fill="#FFFFFF" opacity="0.5"/>
+    <circle cx="52" cy="75" r="0.8" fill="#FFFFFF" opacity="0.5"/>
+    
+    <!-- Adaptive typography -->
+    <text x="110" y="55" font-family="'Inter', 'SF Pro Display', -apple-system, sans-serif" 
+          font-size="38" font-weight="800" letter-spacing="-0.02em" class="primary-text text-shadow">Leet</text>
+    
+    <text x="110" y="88" font-family="'Inter', 'SF Pro Display', -apple-system, sans-serif" 
+          font-size="38" font-weight="300" letter-spacing="0.01em" class="secondary-text text-shadow">Connect</text>
+    
+    <!-- Adaptive connection network -->
+    <g opacity="0.8">
+      <circle cx="280" cy="45" r="2.5" fill="#FFA116"/>
+      <circle cx="295" cy="38" r="2" fill="#FFA116" opacity="0.85"/>
+      <circle cx="310" cy="45" r="2.5" fill="#FFA116"/>
+      <circle cx="297" cy="55" r="1.8" fill="#FFA116" opacity="0.7"/>
+      
+      <line x1="280" y1="45" x2="295" y2="38" class="connection-line" stroke-width="1.5" opacity="0.6"/>
+      <line x1="295" y1="38" x2="310" y2="45" class="connection-line" stroke-width="1.5" opacity="0.6"/>
+      <line x1="280" y1="45" x2="297" y2="55" class="connection-line" stroke-width="1.2" opacity="0.5"/>
+      <line x1="310" y1="45" x2="297" y2="55" class="connection-line" stroke-width="1.2" opacity="0.5"/>
+    </g>
+    
+    <!-- Adaptive analytics bars -->
+    <g opacity="0.7">
+      <rect x="285" y="75" width="2.5" height="12" rx="1.25" class="analytics-bar"/>
+      <rect x="290" y="70" width="2.5" height="17" rx="1.25" class="analytics-bar"/>
+      <rect x="295" y="65" width="2.5" height="22" rx="1.25" fill="#FFA116"/>
+      <rect x="300" y="68" width="2.5" height="19" rx="1.25" class="analytics-bar"/>
+      <rect x="305" y="72" width="2.5" height="15" rx="1.25" class="analytics-light"/>
+      
+      <polyline points="286.25,81 292.25,78.5 297.25,76 302.25,77.5 307.25,79.5" 
+                fill="none" stroke="#FFA116" stroke-width="1.2" opacity="0.5"/>
+    </g>
+    
+    <!-- Adaptive binary code -->
+    <g font-family="'JetBrains Mono', 'SF Mono', monospace" font-size="7" opacity="0.6">
+      <text x="325" y="40" class="binary-code">1101</text>
+      <text x="325" y="50" class="binary-code">0110</text>
+      <text x="325" y="60" class="binary-code">1011</text>
+      <text x="325" y="70" class="binary-code">0101</text>
+      <text x="325" y="80" class="binary-code">1100</text>
+    </g>
+    
+    <!-- Adaptive progress bar -->
+    <g opacity="0.5">
+      <rect x="110" y="100" width="120" height="2" rx="1" class="progress-bg"/>
+      <rect x="110" y="100" width="75" height="2" rx="1" fill="#FFA116"/>
+    </g>
+    
+    <!-- Enhanced pulse animation -->
+    <circle cx="50" cy="70" r="45" fill="none" stroke="#FFA116" stroke-width="0.8" opacity="0.25">
+      <animate attributeName="r" values="42;50;42" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.25;0;0.25" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Dark theme enhancement ring -->
+    <circle cx="50" cy="70" r="43" fill="none" stroke="#FFA116" stroke-width="0.3" opacity="0.1"/>
+  </g>
+  
+</svg>

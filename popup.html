@@ -8,7 +8,11 @@
 </head>
 <body>
   <div id="container">
-    <h1>🔗 LeetConnect</h1>
+    <div class="logo-container">
+      <img src="assets/logo.svg" alt="LeetConnect" class="logo" />
+    </div>
+    <div id="demo-badge">Development Phase</div>
+    
     <input type="text" id="username" placeholder="Enter LeetCode Username" />
     <button id="add-user">Add User</button>
     
@@ -23,7 +27,57 @@
       </div>
       
       <button id="refresh-data" class="refresh-btn" title="Refresh all data">🔄</button>
+      <button id="share-extension" class="share-btn" title="Share LeetConnect">📤</button>
       <button id="settings-toggle" class="settings-btn">⚙️</button>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="share-modal hidden">
+      <div class="share-content">
+        <div class="share-header">
+          <h3>Share LeetConnect</h3>
+          <button id="close-share" class="close-btn">×</button>
+        </div>
+        
+        <div class="share-message">
+          <p>🚀 Help your friends discover LeetConnect!</p>
+          <div class="message-preview">
+            "Just found an amazing Chrome extension called LeetConnect! 🔗 It lets you track your friends' LeetCode progress in real-time, get notifications when they solve problems, and stay motivated together. Perfect for coding study groups! Check it out: https://github.com/anujjainbatu/leetconnect"
+          </div>
+        </div>
+        
+        <div class="share-options">
+          <button class="share-option" data-platform="whatsapp">
+            <span class="share-icon">📱</span>
+            WhatsApp
+          </button>
+          
+          <button class="share-option" data-platform="instagram">
+            <span class="share-icon">📸</span>
+            Instagram Story
+          </button>
+          
+          <button class="share-option" data-platform="linkedin">
+            <span class="share-icon">💼</span>
+            LinkedIn
+          </button>
+          
+          <button class="share-option" data-platform="twitter">
+            <span class="share-icon">🐦</span>
+            Twitter
+          </button>
+          
+          <button class="share-option" data-platform="copy">
+            <span class="share-icon">📋</span>
+            Copy Message
+          </button>
+          
+          <button class="share-option" data-platform="copy-link">
+            <span class="share-icon">🔗</span>
+            Copy Link Only
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Settings Section -->
@@ -66,9 +120,23 @@
     
     <div id="user-stats"></div>
     
+    <!-- Branding Section -->
+    <div id="branding">
+      <div class="feedback-section">
+        <p>📝 <strong>Feedback & Suggestions:</strong></p>
+        <p><a href="https://forms.gle/tsSvgUKQnUtYiF8d9" target="_blank" rel="noopener">Share Feedback</a> | Email us at <a href="mailto:anujjainbatu@gmail.com">anujjainbatu@gmail.com</a></p>
+      </div>
+      
+      <div class="github-section">
+        <p>⭐ <strong>Enjoying LeetConnect?</strong></p>
+        <p><a href="https://github.com/anujjainbatu/leetcode-stats-viewer" target="_blank" rel="noopener">Star our GitHub repo</a> | <a href="https://github.com/anujjainbatu/leetcode-stats-viewer/issues" target="_blank" rel="noopener">Contribute</a></p>
+      </div>
+    </div>
+    
     <!-- Footer -->
     <div id="footer">
       <p>Made with ❤️ by <a href="https://github.com/anujjainbatu" target="_blank" rel="noopener">anujjainbatu</a></p>
+      <p class="version">v1.2 Demo</p>
     </div>
   </div>
   <script src="popup.js"></script>

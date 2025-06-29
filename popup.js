@@ -377,7 +377,80 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+
+  // Share functionality event listeners
+  document.getElementById("share-extension").addEventListener("click", () => {
+    document.getElementById("share-modal").classList.remove("hidden");
+  });
+
+  document.getElementById("close-share").addEventListener("click", () => {
+    document.getElementById("share-modal").classList.add("hidden");
+  });
+
+  // Close modal when clicking outside
+  document.getElementById("share-modal").addEventListener("click", (e) => {
+    if (e.target.id === "share-modal") {
+      document.getElementById("share-modal").classList.add("hidden");
+    }
+  });
+
+  // Handle share options
+  document.querySelectorAll(".share-option").forEach(option => {
+    option.addEventListener("click", (e) => {
+      const platform = e.currentTarget.dataset.platform;
+      handleShare(platform);
+    });
+  });
 });
+
+// Share functionality
+const handleShare = (platform) => {
+  const shareMessage = "Just found an amazing Chrome extension called LeetConnect! 🔗 It lets you track your friends' LeetCode progress in real-time, get notifications when they solve problems, and stay motivated together. Perfect for coding study groups! Check it out: https://github.com/anujjainbatu/leetconnect";
+  
+  const encodedMessage = encodeURIComponent(shareMessage);
+  const repoUrl = "https://github.com/anujjainbatu/leetconnect";
+  
+  switch (platform) {
+    case 'whatsapp':
+      window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+      break;
+      
+    case 'linkedin':
+      const linkedinText = encodeURIComponent("Just found an amazing Chrome extension called LeetConnect! Perfect for coding study groups and tracking LeetCode progress together.");
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(repoUrl)}&summary=${linkedinText}`, '_blank');
+      break;
+      
+    case 'twitter':
+      const twitterText = encodeURIComponent("Just found LeetConnect! 🔗 An amazing Chrome extension to track friends' LeetCode progress in real-time. Perfect for coding study groups! #LeetCode #Coding");
+      window.open(`https://twitter.com/intent/tweet?text=${twitterText}&url=${encodeURIComponent(repoUrl)}`, '_blank');
+      break;
+      
+    case 'copy':
+      navigator.clipboard.writeText(shareMessage).then(() => {
+        // Show feedback
+        const copyBtn = document.querySelector('[data-platform="copy"]');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<span class="share-icon">✅</span>Copied!';
+        copyBtn.style.background = 'rgba(0, 184, 163, 0.2)';
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+          copyBtn.style.background = '';
+        }, 2000);
+      }).catch(() => {
+        // Fallback for older browsers
+        alert('Message copied to clipboard:\n\n' + shareMessage);
+      });
+      break;
+  }
+  
+  // Close modal after sharing
+  if (platform !== 'copy') {
+    setTimeout(() => {
+      document.getElementById("share-modal").classList.add("hidden");
+    }, 500);
+  }
+};
 
 const addUser = async (username) => {
   // Check if user already exists

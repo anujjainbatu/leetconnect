@@ -15,17 +15,36 @@ body {
   gap: 12px;
   width: 100%;
   box-sizing: border-box;
+  position: relative; /* Added for demo badge positioning */
 }
 
+.logo-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 0 12px 0;
+  position: relative;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.logo {
+  height: 48px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 2px 8px rgba(255, 161, 22, 0.3));
+}
+
+/* Update the h1 styling to be removed or repurposed */
 h1 {
-  margin: 0 0 16px 0;
-  font-size: 20px;
-  font-weight: 700;
-  text-align: center;
-  background: linear-gradient(45deg, #FFA116, #FFD700);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  display: none; /* Hide the old text heading */
 }
 
 input, button, select {
@@ -540,19 +559,86 @@ input[type="checkbox"] {
   }
 }
 
-/* Footer styling */
+/* Demo Badge */
+#demo-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+  animation: pulse 2s infinite;
+  z-index: 10;
+}
+
+/* Branding Section */
+#branding {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255, 161, 22, 0.05);
+  border: 1px solid rgba(255, 161, 22, 0.2);
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.feedback-section, .github-section {
+  margin-bottom: 8px;
+}
+
+.feedback-section:last-child, .github-section:last-child {
+  margin-bottom: 0;
+}
+
+#branding p {
+  margin: 2px 0;
+  line-height: 1.4;
+}
+
+#branding strong {
+  color: #FFA116;
+  font-weight: 600;
+}
+
+#branding a {
+  color: #FFD700;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 2px;
+  padding: 1px 2px;
+}
+
+#branding a:hover {
+  color: #FFA116;
+  background: rgba(255, 161, 22, 0.1);
+  text-decoration: underline;
+}
+
+/* Footer styling updates */
 #footer {
-  margin-top: 16px;
-  padding-top: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
 }
 
 #footer p {
-  margin: 0;
-  font-size: 11px;
+  margin: 2px 0;
+  font-size: 10px;
   color: rgba(255, 255, 255, 0.6);
   font-weight: 500;
+  line-height: 1.3;
+}
+
+.version {
+  font-size: 8px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-weight: 400 !important;
 }
 
 #footer a {
@@ -607,5 +693,187 @@ input[type="checkbox"] {
   animation: spin 1s linear infinite;
   pointer-events: none;
   opacity: 0.7;
+}
+
+.share-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  padding: 6px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 161, 22, 0.2);
+}
+
+/* Share Modal */
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.share-modal.hidden {
+  display: none;
+}
+
+.share-content {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  border: 1px solid rgba(255, 161, 22, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.share-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.share-header h3 {
+  margin: 0;
+  color: #FFA116;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: none;
+  box-shadow: none;
+}
+
+.share-message {
+  margin-bottom: 20px;
+}
+
+.share-message p {
+  margin: 0 0 8px 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.message-preview {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.share-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  justify-content: center;
+  box-shadow: none;
+  white-space: nowrap;
+}
+
+.share-option:hover {
+  background: rgba(255, 161, 22, 0.15);
+  border-color: rgba(255, 161, 22, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 161, 22, 0.2);
+}
+
+.share-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Special styling for Instagram option */
+.share-option[data-platform="instagram"] {
+  background: linear-gradient(45deg, rgba(131, 58, 180, 0.1), rgba(253, 29, 29, 0.1), rgba(252, 176, 64, 0.1));
+  border-color: rgba(131, 58, 180, 0.3);
+}
+
+.share-option[data-platform="instagram"]:hover {
+  background: linear-gradient(45deg, rgba(131, 58, 180, 0.2), rgba(253, 29, 29, 0.2), rgba(252, 176, 64, 0.2));
+  border-color: rgba(131, 58, 180, 0.5);
+}
+
+/* Animation for modal */
+.share-modal {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.share-content {
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
