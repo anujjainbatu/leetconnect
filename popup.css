@@ -426,6 +426,11 @@ input[type="checkbox"] {
   flex: 1;
 }
 
+.error-state.invalid-user {
+  color: #ff9800;
+  font-weight: 600;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 4px;

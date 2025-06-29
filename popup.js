@@ -59,9 +59,23 @@ const fetchStats = async (username, forceRefresh = false) => {
 
   try {
     const res = await fetch(`${API_BASE}/${username}`);
+    
+    // Check if the response is successful
+    if (!res.ok) {
+      if (res.status === 404) {
+        throw new Error("USER_NOT_FOUND");
+      } else {
+        throw new Error("NETWORK_ERROR");
+      }
+    }
+    
     const data = await res.json();
 
-    if (!data || !data.totalSolved) throw new Error("Invalid response");
+    // Check if the response contains valid user data
+    // Fixed the validation logic - was using !data.totalSolved === undefined which is always true
+    if (!data || data.error || data.totalSolved === undefined || data.totalSolved === null) {
+      throw new Error("USER_NOT_FOUND");
+    }
 
     // Calculate ranking change if we have previous data
     const rankingChange = cachedData ? calculateRankingChange(cachedData.ranking, data.ranking) : null;
@@ -104,7 +118,12 @@ const fetchStats = async (username, forceRefresh = false) => {
 
   } catch (err) {
     console.error(err);
-    renderErrorState(box, username);
+    
+    // Determine error type and render appropriate message
+    const isInvalidUser = err.message === "USER_NOT_FOUND" || 
+                         (err.message.includes("Invalid response") && !cachedData);
+    
+    renderErrorState(box, username, isInvalidUser);
     
     // Store error state for consistency
     const userInfo = {
@@ -220,10 +239,13 @@ const updateRankingPositions = () => {
 };
 
 // Helper function to render error state
-const renderErrorState = (box, username) => {
+const renderErrorState = (box, username, isInvalidUser = false) => {
+  const errorMessage = isInvalidUser ? "❌ Invalid username" : "⚠️ Error loading data";
+  const errorClass = isInvalidUser ? "error-state invalid-user" : "error-state";
+  
   box.innerHTML = `
     <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
-    <div class="error-state">⚠️ Error loading data</div>
+    <div class="${errorClass}">${errorMessage}</div>
     <button class="remove-user" data-username="${username}">×</button>
   `;
 };
