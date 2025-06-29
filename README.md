@@ -6,6 +6,21 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
 ![Version](https://img.shields.io/badge/version-1.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+## 📸 Demo
+
+<div align="center">
+
+### Main Interface
+![LeetConnect Demo](assets/demo.png)
+
+### Settings Panel
+![Settings Panel](assets/demo-settings.png)
+
+### Extension in Action
+![LeetConnect Demo GIF](assets/demo.gif)
+
+</div>
+
 ## ✨ Features
 
 - 📊 **Real-time Stats Tracking** - View total problems solved, easy/medium/hard breakdowns, and current rankings
@@ -16,6 +31,7 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
 - 🎯 **Multiple Sorting Options** - Sort by rating, questions solved, or alphabetically
 - 💾 **Data Caching** - Instant loading with cached data while fetching updates
 - 🎨 **Beautiful Dark UI** - Modern, responsive design with LeetCode-inspired colors
+- 🤝 **Easy Sharing** - Share the extension with friends via social media or direct links
 
 ## 🚀 Installation
 
@@ -23,6 +39,12 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
 *Coming soon - extension will be published to Chrome Web Store*
 
 ### Method 2: Install from Source (Developer Mode)
+
+<div align="center">
+
+![Installation Demo](assets/installation.gif)
+
+</div>
 
 1. **Download the Extension**
    ```bash
@@ -84,6 +106,17 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
    - Enable notifications to get alerts when friends solve problems
    - Test notifications to ensure they're working
    - Get daily coding reminders
+
+### Sharing with Friends
+
+1. **Click the Share Button** (📤 icon) in the extension
+2. **Choose your platform:**
+   - WhatsApp - Direct message sharing
+   - Instagram Story - Share to your story
+   - LinkedIn - Professional network sharing
+   - Twitter - Tweet about the extension
+   - Copy Message - Get formatted text to share anywhere
+   - Copy Link - Just the GitHub repository link
 
 ## 🔧 Configuration Options
 
@@ -158,6 +191,33 @@ Contributions are welcome! Here's how you can help:
    ```
 6. **Open a Pull Request**
 
+## 💬 Feedback & Support
+
+We'd love to hear from you! Your feedback helps us improve LeetConnect.
+
+### 📝 Share Your Feedback
+**[Fill out our feedback form](https://forms.gle/tsSvgUKQnUtYiF8d9)** - Quick and easy way to share suggestions, report bugs, or request features.
+
+### 📧 Direct Contact
+Email us at [anujjainbatu@gmail.com](mailto:anujjainbatu@gmail.com) for:
+- Bug reports with detailed information
+- Feature requests and suggestions
+- Technical support
+- Partnership inquiries
+
+### 🔧 Getting Help
+
+Having issues? Here's how to get help:
+
+1. **Check the Troubleshooting section** above
+2. **Search existing issues** on [GitHub Issues](https://github.com/anujjainbatu/leetconnect/issues)
+3. **Create a new issue** with detailed information:
+   - Chrome version
+   - Extension version  
+   - Steps to reproduce the problem
+   - Screenshots if applicable
+4. **Use our feedback form** for quick questions
+
 ## 📝 Privacy Policy
 
 This extension:
@@ -176,18 +236,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [LeetCode API by Faisal Shohag](https://github.com/faisalshohag/leetcode-api) for providing the stats endpoint
 - LeetCode for creating an amazing platform for coding practice
 - The Chrome Extensions community for excellent documentation
-
-## 📞 Support
-
-Having issues? Here's how to get help:
-
-1. **Check the Troubleshooting section** above
-2. **Search existing issues** on GitHub
-3. **Create a new issue** with detailed information:
-   - Chrome version
-   - Extension version  
-   - Steps to reproduce the problem
-   - Screenshots if applicable
+- All our users who provided valuable feedback and suggestions
 
 ---
 
@@ -197,6 +246,10 @@ Having issues? Here's how to get help:
 
 Made with ❤️ for the coding community
 
-[Report Bug](https://github.com/anujjainbatu/leetconnect/issues) • [Request Feature](https://github.com/anujjainbatu/leetconnect/issues) • [Contribute](https://github.com/anujjainbatu/leetconnect/pulls)
+[🐛 Report Bug](https://github.com/anujjainbatu/leetconnect/issues) • [✨ Request Feature](https://github.com/anujjainbatu/leetconnect/issues) • [🤝 Contribute](https://github.com/anujjainbatu/leetconnect/pulls) • [📝 Feedback Form](https://forms.gle/tsSvgUKQnUtYiF8d9)
+
+### Share LeetConnect with your coding friends! 🚀
+[![Share on Twitter](https://img.shields.io/badge/Share%20on-Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/intent/tweet?text=Just%20found%20LeetConnect!%20%F0%9F%94%97%20An%20amazing%20Chrome%20extension%20to%20track%20friends'%20LeetCode%20progress%20in%20real-time.%20Perfect%20for%20coding%20study%20groups!%20%23LeetCode%20%23Coding&url=https://github.com/anujjainbatu/leetconnect)
+[![Share on LinkedIn](https://img.shields.io/badge/Share%20on-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/sharing/share-offsite/?url=https://github.com/anujjainbatu/leetconnect)
 
 </div>
