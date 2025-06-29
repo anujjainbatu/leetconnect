@@ -9,6 +9,7 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
 ## 📸 Demo
 
 <div align="center">
+
 ![LeetConnect Demo GIF](assets/demo.gif)
 
 </div>
