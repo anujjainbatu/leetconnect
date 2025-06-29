@@ -431,6 +431,28 @@ input[type="checkbox"] {
   font-weight: 600;
 }
 
+.error-box {
+  animation: slideInError 0.3s ease-out;
+  transition: all 0.5s ease;
+}
+
+.error-box .remove-user {
+  display: none; /* Hide remove button for temporary errors */
+}
+
+@keyframes slideInError {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+    background: rgba(255, 107, 107, 0.2);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 4px;

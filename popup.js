@@ -476,18 +476,41 @@ const handleShare = (platform) => {
 
 const addUser = async (username) => {
   // Check if user already exists
-  chrome.storage.local.get(["usernames"], (result) => {
+  chrome.storage.local.get(["usernames"], async (result) => {
     const usernames = result.usernames || [];
     if (usernames.includes(username)) {
       alert("User already added!");
       return;
     }
     
-    // Add new user
-    usernames.push(username);
-    chrome.storage.local.set({ usernames }, () => {
-      // Fetch stats for the new user (force refresh for new users)
-      fetchStats(username, true).then(() => {
+    // First validate the username by fetching stats
+    try {
+      const res = await fetch(`${API_BASE}/${username}`);
+      
+      if (!res.ok) {
+        if (res.status === 404) {
+          // Show error immediately and don't add to database
+          showTemporaryError(username, "❌ Invalid username - User not found");
+          return;
+        } else {
+          throw new Error("NETWORK_ERROR");
+        }
+      }
+      
+      const data = await res.json();
+      
+      // Check if the response contains valid user data
+      if (!data || data.error || data.totalSolved === undefined || data.totalSolved === null) {
+        showTemporaryError(username, "❌ Invalid username - User not found");
+        return;
+      }
+      
+      // Only add to database if validation succeeds
+      usernames.push(username);
+      chrome.storage.local.set({ usernames }, () => {
+        // Fetch stats for the new user (we already have the data, so we can use it)
+        renderValidatedUser(username, data);
+        
         // Re-sort after adding new user
         sortUsers();
         
@@ -504,7 +527,76 @@ const addUser = async (username) => {
         
         chrome.storage.local.set({ sortedUserData: newSortedUserData });
       });
-    });
+      
+    } catch (error) {
+      console.error(`Error validating username ${username}:`, error);
+      showTemporaryError(username, "⚠️ Error validating username - Check connection");
+    }
+  });
+};
+
+// Helper function to show temporary error that auto-removes
+const showTemporaryError = (username, errorMessage) => {
+  const statsContainer = document.getElementById("user-stats");
+  const errorBox = document.createElement("div");
+  errorBox.className = "user-box error-box";
+  
+  errorBox.innerHTML = `
+    <div class="username">${username}</div>
+    <div class="error-state invalid-user">${errorMessage}</div>
+  `;
+  
+  // Add to container
+  statsContainer.appendChild(errorBox);
+  
+  // Auto-remove after 3 seconds with fade effect
+  setTimeout(() => {
+    errorBox.style.opacity = '0.5';
+    errorBox.style.transform = 'translateX(-10px)';
+  }, 2000);
+  
+  setTimeout(() => {
+    if (errorBox.parentNode) {
+      errorBox.remove();
+    }
+  }, 3000);
+};
+
+// Helper function to render validated user (similar to fetchStats but for already validated data)
+const renderValidatedUser = (username, data) => {
+  const box = document.createElement("div");
+  box.className = "user-box";
+  
+  const statsContainer = document.getElementById("user-stats");
+  statsContainer.appendChild(box);
+  
+  // Store user data for sorting
+  const userInfo = {
+    username,
+    totalSolved: data.totalSolved,
+    ranking: data.ranking,
+    easySolved: data.easySolved,
+    totalEasy: data.totalEasy,
+    mediumSolved: data.mediumSolved,
+    totalMedium: data.totalMedium,
+    hardSolved: data.hardSolved,
+    totalHard: data.totalHard,
+    box
+  };
+  
+  userData.push(userInfo);
+  
+  // Render user box
+  renderUserBox(box, username, data, false);
+  
+  // Cache the data
+  cacheUserData(username, data);
+  
+  // Store stats for comparison in background
+  chrome.storage.local.get(['lastStats'], (result) => {
+    const lastStats = result.lastStats || {};
+    lastStats[username] = data.totalSolved;
+    chrome.storage.local.set({ lastStats });
   });
 };
 
