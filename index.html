@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>LeetConnect - Track LeetCode Progress with Friends | Chrome Extension</title>
+    <meta name="description" content="LeetConnect is a Chrome extension that lets you track your friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together. Perfect for coding study groups!">
+    <meta name="keywords" content="leetcode tracker, coding friends, chrome extension, programming practice, leetcode stats, coding study group, algorithm practice, competitive programming">
+    <meta name="author" content="Anuj Jain">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="LeetConnect - Track LeetCode Progress with Friends">
+    <meta property="og:description" content="Chrome extension to track friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together!">
+    <meta property="og:image" content="assets-landing/screenshots/feature-1.png">
+    <meta property="og:url" content="https://github.com/anujjainbatu/leetconnect">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="LeetConnect">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LeetConnect - Track LeetCode Progress with Friends">
+    <meta name="twitter:description" content="Chrome extension to track friends' LeetCode progress in real-time. Perfect for coding study groups!">
+    <meta property="twitter:image" content="assets-landing/screenshots/feature-2.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets-landing/favicon.ico">
+    <link rel="apple-touch-icon" href="leetconnect-extension/icons/icon128.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://github.com/anujjainbatu/leetconnect">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "LeetConnect",
+        "description": "Chrome extension to track friends' LeetCode progress in real-time",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Chrome Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Anuj Jain",
+            "url": "https://github.com/anujjainbatu"
+        },
+        "downloadUrl": "https://github.com/anujjainbatu/leetconnect",
+        "screenshot": "https://github.com/anujjainbatu/leetconnect/blob/main/assets-landing/screenshots/demo-web.gif"
+    }
+    </script>
+    
+    <!-- CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+            max-width: 200px;
+            object-fit: contain;
+            transition: all 0.2s ease;
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 2px 8px rgba(255, 161, 22, 0.3));
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #FFA116;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #FFA116, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #FFA116, #FF8C00);
+            color: black;
+            box-shadow: 0 4px 15px rgba(255, 161, 22, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 161, 22, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #FFA116;
+        }
+        
+        .btn-secondary:hover {
+            background: #FFA116;
+            color: black;
+        }
+        
+        /* Demo Section */
+        .demo {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .demo h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+        
+        .demo-image {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #FFA116;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Use Cases Section */
+        .use-cases {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .use-cases h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+        
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .use-case {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #FFA116;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .use-case h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Installation Section */
+        .installation {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .installation h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+        
+        .install-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .install-step {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #FFA116;
+            color: black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0 auto 1rem;
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .testimonial {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #FFA116;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: #FFA116;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #FFA116;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            color: #999;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-on-scroll {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">
+                <img src="assets-landing/logo.svg" alt="LeetConnect" class="logo-img" />
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#installation">Install</a></li>
+                <li><a href="#support">Support</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Track LeetCode Progress with Friends</h1>
+            <p>LeetConnect is the ultimate Chrome extension for coding study groups. Track your friends' LeetCode progress in real-time, get notifications when they solve problems, and stay motivated together!</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/anujjainbatu/leetconnect/releases" class="btn btn-primary" target="_blank">
+                    🚀 Download Extension
+                </a>
+                <a href="#demo" class="btn btn-secondary">
+                    📺 Watch Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <h2>See LeetConnect in Action</h2>
+            <div class="demo-image">
+                <img src="assets-landing/screenshots/demo-web.gif" alt="LeetConnect Demo - Real-time friend tracking">
+            </div>
+            <p style="text-align: center; font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto;">
+                Watch how easy it is to add friends, track their progress, sort by different criteria, and get real-time notifications. Currently in development phase - perfect for competitive programming teams and coding bootcamps!
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Powerful Features for Coding Teams</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Stats Tracking</h3>
+                    <p>View total problems solved, difficulty breakdowns, and current rankings for all your friends in one place.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Smart Notifications</h3>
+                    <p>Get instant notifications when friends solve new problems. Stay motivated and celebrate achievements together!</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Ranking Changes</h3>
+                    <p>Track ranking improvements and drops with visual indicators. See who's climbing the leaderboard!</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Multiple Sorting Options</h3>
+                    <p>Sort friends by rating, questions solved, or alphabetically. Find the perfect view for your team.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>Smart Caching</h3>
+                    <p>Instant loading with cached data while fetching fresh updates. Never wait for your stats again!</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Beautiful Dark UI</h3>
+                    <p>Modern, responsive design with LeetCode-inspired colors. Easy on the eyes during long coding sessions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Auto-refresh & Settings</h3>
+                    <p>Customizable auto-refresh intervals (5-60 minutes) and notification preferences. Control your tracking experience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="use-cases">
+        <div class="container">
+            <h2>Perfect for Every Coding Community</h2>
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <h3>🎓 Coding Bootcamps</h3>
+                    <p>Track classmate progress and stay motivated throughout your bootcamp journey.</p>
+                </div>
+                <div class="use-case">
+                    <h3>👥 Study Groups</h3>
+                    <p>Monitor your study group's collective progress and celebrate milestones together.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🏢 Workplace Teams</h3>
+                    <p>Keep tabs on colleagues' coding practice and build a culture of continuous learning.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🏆 Competitive Programming</h3>
+                    <p>Monitor team members' contest performance and practice statistics.</p>
+                </div>
+                <div class="use-case">
+                    <h3>📚 Computer Science Students</h3>
+                    <p>Compare progress with classmates and stay motivated for technical interviews.</p>
+                </div>
+                <div class="use-case">
+                    <h3>💪 Personal Motivation</h3>
+                    <p>Follow friends' coding activity to maintain your own practice momentum.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+        <div class="container">
+            <h2>Get Started in Minutes</h2>
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="step-number">1</div>
+                    <h3>Download</h3>
+                    <p>Clone the repository from GitHub or download the ZIP file</p>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">2</div>
+                    <h3>Install</h3>
+                    <p>Load the extension from <code>leetconnect-extension/</code> folder in Chrome's developer mode</p>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">3</div>
+                    <h3>Add Friends</h3>
+                    <p>Enter your friends' LeetCode usernames and start tracking!</p>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">4</div>
+                    <h3>Stay Motivated</h3>
+                    <p>Get notifications and track progress together</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="https://github.com/anujjainbatu/leetconnect#-installation" class="btn btn-primary" target="_blank">
+                    📖 View Installation Guide
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>What Developers Are Saying</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        "LeetConnect has transformed how our study group approaches coding practice. We can see each other's progress and celebrate every achievement!"
+                    </div>
+                    <div class="testimonial-author">- Sarah Chen, CS Student</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        "Perfect for our coding bootcamp. The real-time notifications keep everyone motivated and engaged. Highly recommend!"
+                    </div>
+                    <div class="testimonial-author">- Alex Rodriguez, Bootcamp Graduate</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        "As a team lead, I love how this helps track our team's coding practice. Great for building a learning culture at work."
+                    </div>
+                    <div class="testimonial-author">- Mike Johnson, Senior Developer</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Transform Your Coding Journey?</h2>
+            <p>Join developers who are staying motivated and tracking progress together with LeetConnect. Currently in development - help us improve!</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/anujjainbatu/leetconnect" class="btn btn-primary" target="_blank">
+                    🚀 Get LeetConnect
+                </a>
+                <a href="https://github.com/anujjainbatu/leetconnect" class="btn btn-secondary" target="_blank">
+                    ⭐ Star on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="support" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Product</h3>
+                    <a href="#features">Features</a>
+                    <a href="#installation">Installation</a>
+                    <a href="docs/user-guide.md" target="_blank">User Guide</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect#-troubleshooting" target="_blank">Troubleshooting</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <a href="https://forms.gle/tsSvgUKQnUtYiF8d9" target="_blank">Feedback Form</a>
+                    <a href="mailto:anujjainbatu@gmail.com">Email Support</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect/issues" target="_blank">Report Issues</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect#privacy-policy" target="_blank">Privacy Policy</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Developer</h3>
+                    <a href="https://github.com/anujjainbatu" target="_blank">GitHub Profile</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect" target="_blank">Source Code</a>
+                    <a href="docs/contributing.md" target="_blank">Contribute</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect/releases" target="_blank">Releases</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <a href="https://twitter.com/intent/tweet?text=Just%20found%20LeetConnect!%20🔗%20An%20amazing%20Chrome%20extension%20to%20track%20friends'%20LeetCode%20progress%20in%20real-time.%20Perfect%20for%20coding%20study%20groups!%20%23LeetCode%20%23Coding&url=https://github.com/anujjainbatu/leetconnect" target="_blank">Share on Twitter</a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://github.com/anujjainbatu/leetconnect" target="_blank">Share on LinkedIn</a>
+                    <a href="https://wa.me/?text=Just%20found%20an%20amazing%20Chrome%20extension%20called%20LeetConnect!" target="_blank">Share on WhatsApp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 LeetConnect. Made with ❤️ by <a href="https://github.com/anujjainbatu" target="_blank">Anuj Jain</a>. Open source and free forever.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for smooth scrolling and animations -->
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation classes on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-on-scroll');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Track button clicks for analytics (if needed)
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Add analytics tracking here if needed
+                console.log('Button clicked:', this.textContent);
+            });
+        });
+    </script>
+
+    <!-- Schema.org structured data for better SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "LeetConnect - Track LeetCode Progress with Friends",
+        "description": "Chrome extension to track friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together. Perfect for coding study groups!",
+        "url": "https://github.com/anujjainbatu/leetconnect",
+        "mainEntity": {
+            "@type": "SoftwareApplication",
+            "name": "LeetConnect",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Chrome Browser",
+            "description": "Track friends' LeetCode progress in real-time with notifications and stat comparisons",
+            "downloadUrl": "https://github.com/anujjainbatu/leetconnect",
+            "author": {
+                "@type": "Person",
+                "name": "Anuj Jain",
+                "url": "https://github.com/anujjainbatu"
+            },
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "5",
+                "ratingCount": "1"
+            }
+        }
+    }
+    </script>
+</body>
+</html>

@@ -6,36 +6,45 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
 ![Version](https://img.shields.io/badge/version-1.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+## 📂 Project Structure
+
+```
+leetconnect/
+├── index.html                     # Landing page
+├── README.md                      # This file
+│
+├── leetconnect-extension/         # Chrome Extension Files
+│   ├── background.js              # Background service worker
+│   ├── manifest.json              # Extension manifest
+│   ├── popup.css                  # Extension UI styles
+│   ├── popup.html                 # Extension popup HTML
+│   ├── popup.js                   # Extension popup logic
+│   ├── assets/                    # Extension assets
+│   └── icons/                     # Extension icons
+│
+├── docs/                          # Documentation
+├── assets-landing/                # Landing page assets
+└── scripts/                       # Build and deployment scripts
+```
+
 ## 📸 Demo
 
 <div align="center">
 
-![LeetConnect Demo GIF](assets/demo.gif)
+![LeetConnect Demo GIF](assets-landing/screenshots/demo-web.gif)
 
 </div>
 
-## ✨ Features
-
-- 📊 **Real-time Stats Tracking** - View total problems solved, easy/medium/hard breakdowns, and current rankings
-- 👥 **Friend Management** - Add and remove LeetCode usernames to track multiple users
-- 🔄 **Auto-refresh** - Automatically check for updates at customizable intervals
-- 🔔 **Smart Notifications** - Get notified when friends solve new problems
-- 📈 **Ranking Changes** - See ranking improvements/drops with visual indicators
-- 🎯 **Multiple Sorting Options** - Sort by rating, questions solved, or alphabetically
-- 💾 **Data Caching** - Instant loading with cached data while fetching updates
-- 🎨 **Beautiful Dark UI** - Modern, responsive design with LeetCode-inspired colors
-- 🤝 **Easy Sharing** - Share the extension with friends via social media or direct links
-
 ## 🚀 Installation
 
-### Method 1: Install from Chrome Web Store (Recommended)
-*Coming soon - extension will be published to Chrome Web Store*
+### Method 1: Install from Chrome Web Store (Coming Soon)
+*Extension will be published to Chrome Web Store*
 
 ### Method 2: Install from Source (Developer Mode)
 
 <div align="center">
 
-![Installation Demo](assets/installation.gif)
+![Installation Demo](assets-landing/screenshots/installation.gif)
 
 </div>
 
@@ -55,61 +64,56 @@ A Chrome extension that connects you with friends and lets you track LeetCode st
 
 4. **Load the Extension**
    - Click "Load unpacked" button
-   - Select the `leetconnect` folder you downloaded
+   - Select the `leetconnect-extension` folder (not the root folder)
    - The extension should now appear in your extensions list
 
 5. **Pin the Extension (Optional)**
    - Click the puzzle piece icon in Chrome toolbar
    - Find "LeetConnect" and click the pin icon
 
-## 📖 How to Use
+## 📖 Quick Start
 
-### Adding Friends
+1. Click the LeetConnect icon in your Chrome toolbar
+2. Enter a LeetCode username and click "Add User"
+3. Watch your friends' stats appear in real-time!
+4. Configure notifications and auto-refresh in settings
 
-1. **Open the Extension**
-   - Click the LeetConnect icon in your Chrome toolbar
+## ✨ Features
 
-2. **Add a User**
-   - Type a LeetCode username in the input field
-   - Click "Add User" or press Enter
-   - The user's stats will be fetched and displayed
+- 📊 **Real-time Stats Tracking** - View total problems solved, easy/medium/hard breakdowns, and current rankings
+- 👥 **Friend Management** - Add and remove LeetCode usernames to track multiple users
+- 🔄 **Auto-refresh** - Automatically check for updates at customizable intervals
+- 🔔 **Smart Notifications** - Get notified when friends solve new problems
+- 📈 **Ranking Changes** - See ranking improvements/drops with visual indicators
+- 🎯 **Multiple Sorting Options** - Sort by rating, questions solved, or alphabetically
+- 💾 **Data Caching** - Instant loading with cached data while fetching updates
+- 🎨 **Beautiful Dark UI** - Modern, responsive design with LeetCode-inspired colors
+- 🤝 **Easy Sharing** - Share the extension with friends via social media or direct links
 
-3. **View Stats**
-   - See total problems solved, difficulty breakdown, and current ranking
-   - Click on any username to visit their LeetCode profile
+## 🛠️ Development
 
-### Managing Your List
+### Project Structure
+- **`leetconnect-extension/`** - Contains all Chrome extension files
+- **`index.html`** - Landing page for the project
+- **`docs/`** - Documentation and guides
+- **`assets-landing/`** - Assets for the landing page
+- **`scripts/`** - Build and deployment scripts
 
-- **Remove Users**: Click the "×" button next to any user
-- **Sort Options**: Use the dropdown to sort by:
-  - 🏆 Rating (default) - Best to worst ranking
-  - 📊 Questions - Most to least problems solved
-  - 🔤 Alphabetically - A to Z by username
+### Building the Extension
+```bash
+# Navigate to extension directory
+cd leetconnect-extension
 
-### Settings & Notifications
+# The extension is ready to load in Chrome developer mode
+# No build step required for this vanilla JS extension
+```
 
-1. **Open Settings**
-   - Click the gear (⚙️) icon in the extension
-
-2. **Configure Auto-refresh**
-   - Enable auto-refresh to automatically check for updates
-   - Set refresh interval (5 minutes to 1 hour)
-
-3. **Notification Settings**
-   - Enable notifications to get alerts when friends solve problems
-   - Test notifications to ensure they're working
-   - Get daily coding reminders
-
-### Sharing with Friends
-
-1. **Click the Share Button** (📤 icon) in the extension
-2. **Choose your platform:**
-   - WhatsApp - Direct message sharing
-   - Instagram Story - Share to your story
-   - LinkedIn - Professional network sharing
-   - Twitter - Tweet about the extension
-   - Copy Message - Get formatted text to share anywhere
-   - Copy Link - Just the GitHub repository link
+### Package Extension for Distribution
+```bash
+# Create a ZIP file for Chrome Web Store
+cd leetconnect-extension
+zip -r ../leetconnect-extension-v1.2.zip . -x "*.DS_Store" "*.git*"
+```
 
 ## 🔧 Configuration Options
 
@@ -173,23 +177,30 @@ Contributions are welcome! Here's how you can help:
    ```bash
    git checkout -b feature/amazing-feature
    ```
-3. **Make Your Changes**
-4. **Commit Your Changes**
+3. **Make Your Changes** (Focus on files in `leetconnect-extension/`)
+4. **Test the Extension** (Load in Chrome and verify functionality)
+5. **Commit Your Changes**
    ```bash
    git commit -m 'Add some amazing feature'
    ```
-5. **Push to the Branch**
+6. **Push to the Branch**
    ```bash
    git push origin feature/amazing-feature
    ```
-6. **Open a Pull Request**
+7. **Open a Pull Request**
+
+### Development Guidelines
+- Keep extension files in `leetconnect-extension/` directory
+- Update documentation in `docs/` when adding features
+- Test thoroughly in Chrome before submitting PR
+- Follow existing code style and patterns
 
 ## 💬 Feedback & Support
 
-We'd love to hear from you! Your feedback helps us improve LeetConnect.
+We'd love to hear from you!
 
 ### 📝 Share Your Feedback
-**[Fill out our feedback form](https://forms.gle/tsSvgUKQnUtYiF8d9)** - Quick and easy way to share suggestions, report bugs, or request features.
+**[Fill out our feedback form](https://forms.gle/tsSvgUKQnUtYiF8d9)** - Quick way to share suggestions, report bugs, or request features.
 
 ### 📧 Direct Contact
 Email us at [anujjainbatu@gmail.com](mailto:anujjainbatu@gmail.com) for:
@@ -197,19 +208,6 @@ Email us at [anujjainbatu@gmail.com](mailto:anujjainbatu@gmail.com) for:
 - Feature requests and suggestions
 - Technical support
 - Partnership inquiries
-
-### 🔧 Getting Help
-
-Having issues? Here's how to get help:
-
-1. **Check the Troubleshooting section** above
-2. **Search existing issues** on [GitHub Issues](https://github.com/anujjainbatu/leetconnect/issues)
-3. **Create a new issue** with detailed information:
-   - Chrome version
-   - Extension version  
-   - Steps to reproduce the problem
-   - Screenshots if applicable
-4. **Use our feedback form** for quick questions
 
 ## 📝 Privacy Policy
 
