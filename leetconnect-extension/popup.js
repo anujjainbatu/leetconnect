@@ -6,6 +6,9 @@ let userData = [];
 // Cache duration in milliseconds (15 minutes)
 const CACHE_DURATION = 15 * 60 * 1000;
 
+const CURRENT_VERSION = "1.2"; // Keep this in sync with background.js
+const GITHUB_API_URL = "https://api.github.com/repos/anujjainbatu/leetconnect/releases/latest";
+
 const fetchStats = async (username, forceRefresh = false) => {
   const box = document.createElement("div");
   box.className = "user-box";
@@ -415,9 +418,73 @@ const refreshAllData = async () => {
   }
 };
 
+// Add this function before your DOMContentLoaded event
+const checkForUpdates = async () => {
+  try {
+    const response = await fetch(GITHUB_API_URL);
+    if (!response.ok) return;
+    
+    const release = await response.json();
+    const latestVersion = release.tag_name?.replace('v', '') || '';
+    
+    if (latestVersion && latestVersion !== CURRENT_VERSION) {
+      // Check if user has dismissed this version
+      const result = await chrome.storage.local.get(['dismissedVersion']);
+      const dismissedVersion = result.dismissedVersion || '';
+      
+      if (latestVersion !== dismissedVersion) {
+        showUpdateBanner(release);
+      }
+    }
+  } catch (error) {
+    console.error('Error checking for updates in popup:', error);
+  }
+};
+
+const showUpdateBanner = (release) => {
+  // Remove any existing update banner
+  const existingBanner = document.querySelector('.update-banner');
+  if (existingBanner) {
+    existingBanner.remove();
+  }
+  
+  const updateBanner = document.createElement('div');
+  updateBanner.className = 'update-banner';
+  updateBanner.innerHTML = `
+    <div class="update-content">
+      <div class="update-header">
+        <strong>🚀 Update Available!</strong>
+        <button class="dismiss-update" title="Dismiss this update">×</button>
+      </div>
+      <p>Version ${release.tag_name} is now available with new features and improvements!</p>
+      <div class="update-actions">
+        <button class="update-btn" onclick="window.open('${release.html_url}', '_blank')">
+          <i class="fas fa-download"></i> Download Update
+        </button>
+        <button class="changelog-btn" onclick="window.open('${release.html_url}', '_blank')">
+          <i class="fas fa-list"></i> View Changes
+        </button>
+      </div>
+    </div>
+  `;
+  
+  // Add event listener for dismiss button
+  updateBanner.querySelector('.dismiss-update').addEventListener('click', () => {
+    updateBanner.remove();
+    // Remember that user dismissed this version
+    chrome.storage.local.set({ dismissedVersion: release.tag_name?.replace('v', '') || '' });
+  });
+  
+  // Insert at the top of the container, after the logo
+  const container = document.getElementById('container');
+  const logoContainer = container.querySelector('.logo-container');
+  container.insertBefore(updateBanner, logoContainer.nextSibling);
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   loadUsers(); // Load without forcing refresh on startup
   loadSettings();
+  checkForUpdates(); // Add this line to check for updates when popup opens
 
   // Main functionality event listeners
   document.getElementById("add-user").addEventListener("click", () => {
@@ -457,6 +524,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("refresh-interval").addEventListener("change", saveSettings);
   document.getElementById("notifications-enabled").addEventListener("change", saveSettings);
   document.getElementById("test-notification").addEventListener("click", testNotification);
+  
+  // Add this line for manual update check
+  document.getElementById("check-updates").addEventListener("click", manualUpdateCheck);
 
   // Allow Enter key to add user
   document.getElementById("username").addEventListener("keypress", (e) => {
@@ -745,4 +815,42 @@ const testNotification = () => {
       console.error('Failed to send test notification:', response?.error);
     }
   });
+};
+
+// Add this function
+const manualUpdateCheck = async () => {
+  const checkBtn = document.getElementById("check-updates");
+  const originalText = checkBtn.textContent;
+  
+  checkBtn.textContent = "Checking...";
+  checkBtn.disabled = true;
+  
+  try {
+    const response = await fetch(GITHUB_API_URL);
+    if (!response.ok) throw new Error('Failed to fetch');
+    
+    const release = await response.json();
+    const latestVersion = release.tag_name?.replace('v', '') || '';
+    
+    if (latestVersion && latestVersion !== CURRENT_VERSION) {
+      // Clear any dismissed version to force showing the banner
+      chrome.storage.local.remove(['dismissedVersion']);
+      showUpdateBanner(release);
+      checkBtn.textContent = "Update Available!";
+      checkBtn.style.background = 'rgba(0, 184, 163, 0.3)';
+    } else {
+      checkBtn.textContent = "Up to Date ✓";
+      checkBtn.style.background = 'rgba(40, 167, 69, 0.3)';
+    }
+  } catch (error) {
+    console.error('Manual update check failed:', error);
+    checkBtn.textContent = "Check Failed";
+    checkBtn.style.background = 'rgba(220, 53, 69, 0.3)';
+  }
+  
+  setTimeout(() => {
+    checkBtn.textContent = originalText;
+    checkBtn.style.background = '';
+    checkBtn.disabled = false;
+  }, 3000);
 };

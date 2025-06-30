@@ -1,5 +1,9 @@
 const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
 
+// Update this with each release - IMPORTANT: Change this when you release new versions
+const CURRENT_VERSION = "1.2";
+const GITHUB_API_URL = "https://api.github.com/repos/anujjainbatu/leetconnect/releases/latest";
+
 // Install event - set default settings
 chrome.runtime.onInstalled.addListener(async () => {
   console.log('Extension installed/updated');
@@ -24,6 +28,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     await checkForUpdates();
   } else if (alarm.name === 'dailyReminder') {
     await sendDailyReminder();
+  } else if (alarm.name === 'updateCheck') {
+    await checkForExtensionUpdate();
   }
 });
 
@@ -130,6 +136,59 @@ const sendDailyReminder = async () => {
   }
 };
 
+// Check for extension updates
+const checkForExtensionUpdate = async () => {
+  try {
+    console.log('Checking for extension updates...');
+    const response = await fetch(GITHUB_API_URL);
+    
+    if (!response.ok) {
+      console.error('Failed to fetch release info:', response.status);
+      return;
+    }
+    
+    const release = await response.json();
+    const latestVersion = release.tag_name?.replace('v', '') || '';
+    
+    console.log('Current version:', CURRENT_VERSION, 'Latest version:', latestVersion);
+    
+    if (latestVersion && latestVersion !== CURRENT_VERSION) {
+      // Check if we've already notified about this version
+      const result = await chrome.storage.local.get(['lastNotifiedVersion']);
+      const lastNotifiedVersion = result.lastNotifiedVersion || '';
+      
+      if (latestVersion !== lastNotifiedVersion) {
+        // New version available - create notification
+        chrome.notifications.create('extension-update', {
+          type: 'basic',
+          iconUrl: 'icons/icon128.png',
+          title: '🚀 LeetConnect Update Available!',
+          message: `Version ${latestVersion} is now available. Click to download from GitHub.`,
+          buttons: [
+            { title: 'Download Update' },
+            { title: 'View Changes' }
+          ]
+        }, (notificationId) => {
+          if (chrome.runtime.lastError) {
+            console.error('Update notification error:', chrome.runtime.lastError);
+          } else {
+            console.log('Update notification created:', notificationId);
+          }
+        });
+        
+        // Store the new version info and mark as notified
+        chrome.storage.local.set({ 
+          latestVersion: latestVersion,
+          updateUrl: release.html_url,
+          lastNotifiedVersion: latestVersion
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error checking for updates:', error);
+  }
+};
+
 // Set up alarms based on settings
 const setupAlarms = async () => {
   try {
@@ -143,20 +202,27 @@ const setupAlarms = async () => {
     // Set up auto-refresh alarm
     if (result.autoRefreshEnabled) {
       chrome.alarms.create('autoRefresh', {
-        delayInMinutes: 1, // Start after 1 minute
+        delayInMinutes: 1,
         periodInMinutes: result.autoRefreshInterval || 15
       });
       console.log('Auto-refresh alarm created');
     }
 
-    // Set up daily reminder alarm (every 24 hours)
+    // Set up daily reminder alarm
     if (result.notificationsEnabled) {
       chrome.alarms.create('dailyReminder', {
-        delayInMinutes: 5, // Start after 5 minutes for testing
-        periodInMinutes: 1440 // 24 hours
+        delayInMinutes: 5,
+        periodInMinutes: 1440
       });
       console.log('Daily reminder alarm created');
     }
+
+    // Set up update check alarm (check every 24 hours)
+    chrome.alarms.create('updateCheck', {
+      delayInMinutes: 60, // Check after 1 hour of installation
+      periodInMinutes: 1440 // Check daily
+    });
+    console.log('Update check alarm created');
   } catch (error) {
     console.error('Error setting up alarms:', error);
   }
@@ -191,6 +257,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     });
     return true; // Keep message channel open for async response
+  }
+});
+
+// Handle notification clicks
+chrome.notifications.onClicked.addListener((notificationId) => {
+  if (notificationId === 'extension-update') {
+    // Open GitHub releases page when notification is clicked
+    chrome.tabs.create({ url: 'https://github.com/anujjainbatu/leetconnect/releases/latest' });
+    chrome.notifications.clear(notificationId);
+  }
+});
+
+chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
+  if (notificationId === 'extension-update') {
+    if (buttonIndex === 0) { // Download Update
+      chrome.tabs.create({ url: 'https://github.com/anujjainbatu/leetconnect/releases/latest' });
+    } else if (buttonIndex === 1) { // View Changes
+      chrome.storage.local.get(['updateUrl'], (result) => {
+        chrome.tabs.create({ url: result.updateUrl || 'https://github.com/anujjainbatu/leetconnect/releases' });
+      });
+    }
+    chrome.notifications.clear(notificationId);
   }
 });
 

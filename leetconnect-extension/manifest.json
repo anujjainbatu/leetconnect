@@ -3,7 +3,12 @@
   "name": "LeetConnect",
   "version": "1.2",
   "description": "Connect with friends and track LeetCode progress together - view stats, get notifications, and stay motivated.",
-  "permissions": ["storage", "scripting", "activeTab", "alarms", "notifications"],
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms",
+    "activeTab"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -14,7 +19,8 @@
     "128": "icons/icon128.png"
   },
   "host_permissions": [
-    "https://leetcode-api-faisalshohag.vercel.app/*"
+    "https://leetcode-api-faisalshohag.vercel.app/*",
+    "https://api.github.com/*"
   ],
   "background": {
     "service_worker": "background.js"
