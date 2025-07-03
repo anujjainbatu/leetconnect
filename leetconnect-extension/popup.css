@@ -1000,14 +1000,134 @@ input[type="checkbox"] {
   background: rgba(255, 255, 255, 0.3);
 }
 
-@keyframes slideInUpdate {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Tooltip chart styles - Made smaller and more compact */
+.tooltip-chart {
+  position: absolute;
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  border: 1px solid rgba(255, 161, 22, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  width: 280px; /* Reduced from 400px */
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+}
+
+.tooltip-chart.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tooltip-chart h4 {
+  margin: 0 0 10px 0;
+  color: #FFA116;
+  font-size: 12px; /* Reduced from 14px */
+  font-weight: 600;
+  text-align: center;
+}
+
+.chart-container {
+  width: 100%;
+  height: 60px; /* Reduced from 80px */
+  position: relative;
+  margin-bottom: 10px; /* Reduced from 12px */
+}
+
+.chart-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #FFA116;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-dot {
+  fill: #FFA116;
+  stroke: #1a1a1a;
+  stroke-width: 1;
+  r: 3; /* Reduced from 4 */
+}
+
+.chart-dot:hover {
+  fill: #FFD700;
+  r: 4; /* Reduced from 5 */
+}
+
+.chart-grid {
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 0.5;
+}
+
+.chart-axis {
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 1;
+}
+
+.chart-label {
+  fill: rgba(255, 255, 255, 0.6);
+  font-size: 8px; /* Reduced from 10px */
+  text-anchor: middle;
+  font-weight: 500;
+}
+
+/* Data value labels above points */
+.chart-value-label {
+  fill: #FFA116;
+  font-size: 8px; /* Reduced from 10px */
+  text-anchor: middle;
+  font-weight: 600;
+}
+
+/* Update chart stats to use CSS Grid for better layout */
+.chart-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Changed from 4 to 3 columns */
+  gap: 8px; /* Reduced from 12px */
+  font-size: 10px; /* Reduced from 11px */
+  color: rgba(255, 255, 255, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 8px; /* Reduced from 12px */
+}
+
+.chart-stat {
+  text-align: center;
+}
+
+.chart-stat-value {
+  color: #FFA116;
+  font-weight: 600;
+  font-size: 11px; /* Reduced from 13px */
+  display: block;
+  margin-bottom: 2px;
+}
+
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60px; /* Reduced from 80px */
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 10px; /* Reduced from 12px */
+}
+
+/* Enhance the loading animation */
+.chart-loading .loader {
+  width: 16px; /* Reduced from 20px */
+  height: 16px; /* Reduced from 20px */
+  border: 2px solid rgba(255, 161, 22, 0.2);
+  border-top: 2px solid #FFA116;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 6px auto; /* Reduced from 8px */
 }
 

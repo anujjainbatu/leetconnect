@@ -9,6 +9,9 @@ const CACHE_DURATION = 15 * 60 * 1000;
 const CURRENT_VERSION = "1.2"; // Keep this in sync with background.js
 const GITHUB_API_URL = "https://api.github.com/repos/anujjainbatu/leetconnect/releases/latest";
 
+const SUBMISSION_CALENDAR_CACHE = new Map();
+const CALENDAR_CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
 const fetchStats = async (username, forceRefresh = false) => {
   const box = document.createElement("div");
   box.className = "user-box";
@@ -254,7 +257,7 @@ const renderUserBox = (box, username, data, isLoading = false, statChanges = nul
   const easyChange = statChanges?.easySolved ? renderStatChange(statChanges.easySolved, 'easy') : '';
   const mediumChange = statChanges?.mediumSolved ? renderStatChange(statChanges.mediumSolved, 'medium') : '';
   const hardChange = statChanges?.hardSolved ? renderStatChange(statChanges.hardSolved, 'hard') : '';
-  
+
   box.innerHTML = `
     <div class="username clickable" data-username="${username}" title="Click to visit ${username}'s LeetCode profile">${username}</div>
     <div class="stats-container">
@@ -297,6 +300,22 @@ const renderUserBox = (box, username, data, isLoading = false, statChanges = nul
     <button class="remove-user" data-username="${username}">×</button>
     ${loadingOverlay}
   `;
+
+  // Add hover event listeners for the chart tooltip
+  const usernameElement = box.querySelector('.username');
+  let hoverTimeout;
+
+  usernameElement.addEventListener('mouseenter', () => {
+    // Add a small delay to prevent tooltip from showing on quick hovers
+    hoverTimeout = setTimeout(() => {
+      showTooltipChart(username, usernameElement);
+    }, 300);
+  });
+
+  usernameElement.addEventListener('mouseleave', () => {
+    clearTimeout(hoverTimeout);
+    hideTooltipChart();
+  });
 };
 
 // Add a function to update ranking positions after sorting
@@ -853,4 +872,283 @@ const manualUpdateCheck = async () => {
     checkBtn.style.background = '';
     checkBtn.disabled = false;
   }, 3000);
+};
+
+// Helper functions for submission calendar
+const fetchSubmissionCalendar = async (username) => {
+  try {
+    // Check cache first
+    const cacheKey = `calendar_${username}`;
+    const cached = SUBMISSION_CALENDAR_CACHE.get(cacheKey);
+    
+    if (cached && (Date.now() - cached.timestamp) < CALENDAR_CACHE_DURATION) {
+      return cached.data;
+    }
+
+    const response = await fetch(`${API_BASE}/${username}`);
+    if (!response.ok) throw new Error('Failed to fetch calendar data');
+    
+    const data = await response.json();
+    
+    // Extract submission calendar data (assuming it's in the API response)
+    const submissionCalendar = data.submissionCalendar || {};
+    
+    // Cache the data
+    SUBMISSION_CALENDAR_CACHE.set(cacheKey, {
+      data: submissionCalendar,
+      timestamp: Date.now()
+    });
+    
+    return submissionCalendar;
+  } catch (error) {
+    console.error('Error fetching submission calendar:', error);
+    return {};
+  }
+};
+
+const getLast7DaysData = (submissionCalendar) => {
+  if (!submissionCalendar || Object.keys(submissionCalendar).length === 0) {
+    // Return empty data for 7 days if no calendar data
+    const last7Days = [];
+    const today = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      
+      last7Days.push({
+        date: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        submissions: 0,
+        fullDate: date.toLocaleDateString(),
+        timestamp: Math.floor(date.getTime() / 1000).toString()
+      });
+    }
+    
+    return last7Days;
+  }
+  
+  const last7Days = [];
+  const today = new Date();
+  
+  // Convert all calendar timestamps to Date objects for easier comparison
+  const calendarEntries = Object.entries(submissionCalendar).map(([timestamp, count]) => ({
+    date: new Date(parseInt(timestamp) * 1000),
+    timestamp: timestamp,
+    submissions: count
+  }));
+  
+  // Sort by date (most recent first)
+  calendarEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
+  
+  for (let i = 6; i >= 0; i--) {
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() - i);
+    targetDate.setHours(0, 0, 0, 0);
+    
+    // Find the closest entry for this date (within 24 hours)
+    const dayStart = new Date(targetDate);
+    const dayEnd = new Date(targetDate);
+    dayEnd.setHours(23, 59, 59, 999);
+    
+    const matchingEntry = calendarEntries.find(entry => 
+      entry.date >= dayStart && entry.date <= dayEnd
+    );
+    
+    last7Days.push({
+      date: targetDate.toLocaleDateString('en-US', { weekday: 'short' }),
+      submissions: matchingEntry ? matchingEntry.submissions : 0,
+      fullDate: targetDate.toLocaleDateString(),
+      timestamp: matchingEntry ? matchingEntry.timestamp : Math.floor(targetDate.getTime() / 1000).toString()
+    });
+  }
+  
+  return last7Days;
+};
+
+const createLineChart = (data) => {
+  const width = 256; // Reduced from 368 to fit smaller window
+  const height = 60; // Reduced from 80
+  const padding = 15; // Reduced from 20
+  const chartWidth = width - (padding * 2);
+  const chartHeight = height - (padding * 2);
+  
+  const maxSubmissions = Math.max(...data.map(d => d.submissions), 1);
+  const hasData = data.some(d => d.submissions > 0);
+  
+  // Create SVG
+  let svg = `<svg class="chart-svg" viewBox="0 0 ${width} ${height}">`;
+  
+  // Add grid lines (lighter if no data)
+  const gridOpacity = hasData ? 0.1 : 0.05;
+  for (let i = 0; i <= 3; i++) { // Reduced grid lines from 4 to 3
+    const y = padding + (chartHeight / 3) * i;
+    svg += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" class="chart-grid" style="stroke-opacity: ${gridOpacity}"/>`;
+  }
+  
+  // Create line path
+  const points = data.map((d, i) => {
+    const x = padding + (chartWidth / (data.length - 1)) * i;
+    const y = padding + chartHeight - (d.submissions / maxSubmissions) * chartHeight;
+    return `${x},${y}`;
+  }).join(' ');
+  
+  const lineOpacity = hasData ? 1 : 0.3;
+  svg += `<polyline points="${points}" class="chart-line" style="stroke-opacity: ${lineOpacity}"/>`;
+  
+  // Add dots and value labels
+  data.forEach((d, i) => {
+    const x = padding + (chartWidth / (data.length - 1)) * i;
+    const y = padding + chartHeight - (d.submissions / maxSubmissions) * chartHeight;
+    const dotOpacity = d.submissions > 0 ? 1 : 0.3;
+    const dotRadius = d.submissions > 0 ? 3 : 2; // Smaller dots
+    
+    // Add dot
+    svg += `<circle cx="${x}" cy="${y}" r="${dotRadius}" class="chart-dot" style="fill-opacity: ${dotOpacity}" title="${d.fullDate}: ${d.submissions} submissions"/>`;
+    
+    // Add value label above dot (only if there are submissions)
+    if (d.submissions > 0) {
+      const labelY = y - 8; // Reduced spacing from 12 to 8
+      svg += `<text x="${x}" y="${labelY}" class="chart-value-label">${d.submissions}</text>`;
+    }
+  });
+  
+  // Add day labels
+  data.forEach((d, i) => {
+    const x = padding + (chartWidth / (data.length - 1)) * i;
+    const y = height - 3; // Reduced from 5 to 3
+    svg += `<text x="${x}" y="${y}" class="chart-label">${d.date}</text>`;
+  });
+  
+  // Add "No data" indicator if no submissions
+  if (!hasData) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    svg += `<text x="${centerX}" y="${centerY}" class="chart-label" style="text-anchor: middle; font-size: 10px; fill: rgba(255,255,255,0.4)">No recent activity</text>`;
+  }
+  
+  svg += '</svg>';
+  
+  return svg;
+};
+
+const showTooltipChart = async (username, element) => {
+  // Remove any existing tooltip
+  const existingTooltip = document.querySelector('.tooltip-chart');
+  if (existingTooltip) {
+    existingTooltip.remove();
+  }
+  
+  // Create tooltip element
+  const tooltip = document.createElement('div');
+  tooltip.className = 'tooltip-chart';
+  
+  // Show loading state
+  tooltip.innerHTML = `
+    <h4>${username}'s 7-Day Activity</h4>
+    <div class="chart-loading">
+      <div class="loader"></div>
+      Loading...
+    </div>
+  `;
+  
+  document.body.appendChild(tooltip);
+  
+  // Get positioning relative to the entire user box (not just username)
+  const userBox = element.closest('.user-box');
+  if (!userBox) return;
+  
+  const userBoxRect = userBox.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+  
+  // Center horizontally relative to the user box
+  let left = userBoxRect.left + (userBoxRect.width / 2) - (280 / 2); // 280 is tooltip width
+  
+  // Position vertically - try above the user box first
+  let top = userBoxRect.top - tooltipRect.height - 10;
+  let isAbove = true;
+  
+  // If tooltip goes above viewport, position below the user box
+  if (top < 10) {
+    top = userBoxRect.bottom + 10;
+    isAbove = false;
+  }
+  
+  // Ensure tooltip doesn't go off screen horizontally
+  const minLeft = 10;
+  const maxLeft = window.innerWidth - 290; // 280 width + 10 margin
+  
+  if (left < minLeft) left = minLeft;
+  if (left > maxLeft) left = maxLeft;
+  
+  // Final check for vertical positioning
+  if (!isAbove && top + tooltipRect.height > window.innerHeight - 10) {
+    // If it doesn't fit below either, force it above and adjust if needed
+    top = Math.max(10, userBoxRect.top - tooltipRect.height - 10);
+  }
+  
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+  
+  // Make visible
+  setTimeout(() => tooltip.classList.add('visible'), 10);
+  
+  try {
+    // Fetch and display chart data
+    const submissionCalendar = await fetchSubmissionCalendar(username);
+    const last7Days = getLast7DaysData(submissionCalendar);
+    
+    const totalSubmissions = last7Days.reduce((sum, day) => sum + day.submissions, 0);
+    const avgSubmissions = totalSubmissions > 0 ? (totalSubmissions / 7).toFixed(1) : '0.0';
+    const maxDay = last7Days.reduce((max, day) => day.submissions > max.submissions ? day : max, last7Days[0]);
+    
+    const chartSvg = createLineChart(last7Days);
+    
+    // Show stats in a more compact way (3 columns instead of 4)
+    const statsContent = totalSubmissions > 0 ? `
+      <div class="chart-stats">
+        <div class="chart-stat">
+          <span class="chart-stat-value">${totalSubmissions}</span>
+          <div>Total</div>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-value">${avgSubmissions}</span>
+          <div>Avg/Day</div>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-value">${maxDay.submissions}</span>
+          <div>Peak</div>
+        </div>
+      </div>
+    ` : `
+      <div class="chart-stats">
+        <div class="chart-stat" style="grid-column: 1 / -1; text-align: center; color: rgba(255,255,255,0.6); font-style: italic; font-size: 9px;">
+          No submissions in the last 7 days
+        </div>
+      </div>
+    `;
+    
+    tooltip.innerHTML = `
+      <h4>${username}'s 7-Day Activity</h4>
+      <div class="chart-container">
+        ${chartSvg}
+      </div>
+      ${statsContent}
+    `;
+  } catch (error) {
+    console.error('Error showing tooltip chart:', error);
+    tooltip.innerHTML = `
+      <h4>${username}'s Activity</h4>
+      <div class="chart-loading">
+        ⚠️ Unable to load data
+      </div>
+    `;
+  }
+};
+
+const hideTooltipChart = () => {
+  const tooltip = document.querySelector('.tooltip-chart');
+  if (tooltip) {
+    tooltip.classList.remove('visible');
+    setTimeout(() => tooltip.remove(), 200);
+  }
 };
