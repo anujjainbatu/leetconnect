@@ -1,7 +1,7 @@
 const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
 
 // Update this with each release - IMPORTANT: Change this when you release new versions
-const CURRENT_VERSION = "1.2";
+const CURRENT_VERSION = chrome.runtime.getManifest().version;
 const GITHUB_API_URL = "https://api.github.com/repos/anujjainbatu/leetconnect/releases/latest";
 
 // Install event - set default settings
