@@ -32,6 +32,9 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://leetconnect.anujjainbatu.tech/">
     
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets-landing/styles.css">
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -56,424 +59,6 @@
         "url": "https://leetconnect.anujjainbatu.tech/"
     }
     </script>
-    
-    <!-- CSS -->
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo-img {
-            height: 40px;
-            width: auto;
-            max-width: 200px;
-            object-fit: contain;
-            transition: all 0.2s ease;
-        }
-        
-        .logo-img:hover {
-            transform: scale(1.05);
-            filter: drop-shadow(0 2px 8px rgba(255, 161, 22, 0.3));
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #FFA116;
-        }
-        
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-            padding: 120px 0 80px;
-            text-align: center;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #FFA116, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, #FFA116, #FF8C00);
-            color: black;
-            box-shadow: 0 4px 15px rgba(255, 161, 22, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 161, 22, 0.4);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid #FFA116;
-        }
-        
-        .btn-secondary:hover {
-            background: #FFA116;
-            color: black;
-        }
-        
-        /* Demo Section */
-        .demo {
-            padding: 80px 0;
-            background: #f8f9fa;
-        }
-        
-        .demo h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1a1a1a;
-        }
-        
-        .demo-image {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-        
-        /* Features Section */
-        .features {
-            padding: 80px 0;
-            background: white;
-        }
-        
-        .features h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1a1a1a;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .feature-card {
-            background: #f8f9fa;
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #FFA116;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-        }
-        
-        .feature-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-        
-        /* Use Cases Section */
-        .use-cases {
-            padding: 80px 0;
-            background: #f8f9fa;
-        }
-        
-        .use-cases h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1a1a1a;
-        }
-        
-        .use-cases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .use-case {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid #FFA116;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .use-case h3 {
-            color: #1a1a1a;
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Installation Section */
-        .installation {
-            padding: 80px 0;
-            background: white;
-        }
-        
-        .installation h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1a1a1a;
-        }
-        
-        .install-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .install-step {
-            text-align: center;
-            padding: 1.5rem;
-        }
-        
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background: #FFA116;
-            color: black;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin: 0 auto 1rem;
-        }
-        
-        /* Testimonials Section */
-        .testimonials {
-            padding: 80px 0;
-            background: #f8f9fa;
-        }
-        
-        .testimonials h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1a1a1a;
-        }
-        
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .testimonial {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        
-        .testimonial-content {
-            font-style: italic;
-            margin-bottom: 1rem;
-            color: #555;
-        }
-        
-        .testimonial-author {
-            font-weight: 600;
-            color: #FFA116;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .cta-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .cta-section p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-        
-        /* Footer */
-        .footer {
-            background: #1a1a1a;
-            color: white;
-            padding: 40px 0 20px;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-section h3 {
-            color: #FFA116;
-            margin-bottom: 1rem;
-        }
-        
-        .footer-section a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s;
-        }
-        
-        .footer-section a:hover {
-            color: #FFA116;
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid #333;
-            color: #999;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-        }
-        
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-on-scroll {
-            animation: fadeInUp 0.6s ease-out;
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -526,43 +111,37 @@
             <h2>Powerful Features for Coding Teams</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <div class="feature-icon stats-icon"></div>
                     <h3>Real-time Stats Tracking</h3>
                     <p>View total problems solved, difficulty breakdowns, and current rankings for all your friends in one place.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🔔</div>
+                    <div class="feature-icon notification-icon"></div>
                     <h3>Smart Notifications</h3>
                     <p>Get instant notifications when friends solve new problems. Stay motivated and celebrate achievements together!</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
+                    <div class="feature-icon ranking-icon"></div>
                     <h3>Ranking Changes</h3>
                     <p>Track ranking improvements and drops with visual indicators. See who's climbing the leaderboard!</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
+                    <div class="feature-icon sort-icon"></div>
                     <h3>Multiple Sorting Options</h3>
                     <p>Sort friends by rating, questions solved, or alphabetically. Find the perfect view for your team.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">💾</div>
+                    <div class="feature-icon cache-icon"></div>
                     <h3>Smart Caching</h3>
                     <p>Instant loading with cached data while fetching fresh updates. Never wait for your stats again!</p>
                 </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Beautiful Dark UI</h3>
-                    <p>Modern, responsive design with LeetCode-inspired colors. Easy on the eyes during long coding sessions.</p>
-                </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
+                    <div class="feature-icon settings-icon"></div>
                     <h3>Auto-refresh & Settings</h3>
                     <p>Customizable auto-refresh intervals (5-60 minutes) and notification preferences. Control your tracking experience.</p>
                 </div>
@@ -576,28 +155,28 @@
             <h2>Perfect for Every Coding Community</h2>
             <div class="use-cases-grid">
                 <div class="use-case">
-                    <h3>🎓 Coding Bootcamps</h3>
-                    <p>Track classmate progress and stay motivated throughout your bootcamp journey.</p>
+                    <h3><span class="use-case-icon bootcamp-icon"></span>Coding Bootcamps</h3>
+                    <p>Track classmate progress and stay motivated throughout your bootcamp journey. Build accountability and celebrate collective achievements.</p>
                 </div>
                 <div class="use-case">
-                    <h3>👥 Study Groups</h3>
-                    <p>Monitor your study group's collective progress and celebrate milestones together.</p>
+                    <h3><span class="use-case-icon group-icon"></span>Study Groups</h3>
+                    <p>Monitor your study group's collective progress and celebrate milestones together. Foster collaborative learning and peer motivation.</p>
                 </div>
                 <div class="use-case">
-                    <h3>🏢 Workplace Teams</h3>
-                    <p>Keep tabs on colleagues' coding practice and build a culture of continuous learning.</p>
+                    <h3><span class="use-case-icon workplace-icon"></span>Workplace Teams</h3>
+                    <p>Keep tabs on colleagues' coding practice and build a culture of continuous learning. Enhance team skills and technical growth.</p>
                 </div>
                 <div class="use-case">
-                    <h3>🏆 Competitive Programming</h3>
-                    <p>Monitor team members' contest performance and practice statistics.</p>
+                    <h3><span class="use-case-icon trophy-icon"></span>Competitive Programming</h3>
+                    <p>Monitor team members' contest performance and practice statistics. Track progress in competitive coding challenges and contests.</p>
                 </div>
                 <div class="use-case">
-                    <h3>📚 Computer Science Students</h3>
-                    <p>Compare progress with classmates and stay motivated for technical interviews.</p>
+                    <h3><span class="use-case-icon student-icon"></span>Computer Science Students</h3>
+                    <p>Compare progress with classmates and stay motivated for technical interviews. Prepare together for coding interviews and assessments.</p>
                 </div>
                 <div class="use-case">
-                    <h3>💪 Personal Motivation</h3>
-                    <p>Follow friends' coding activity to maintain your own practice momentum.</p>
+                    <h3><span class="use-case-icon motivation-icon"></span>Personal Motivation</h3>
+                    <p>Follow friends' coding activity to maintain your own practice momentum. Stay consistent and motivated in your coding journey.</p>
                 </div>
             </div>
         </div>
@@ -637,7 +216,7 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
+    <!-- Testimonials Section 
     <section class="testimonials">
         <div class="container">
             <h2>What Developers Are Saying</h2>
@@ -663,7 +242,7 @@
             </div>
         </div>
     </section>
-
+    -->
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="container">
@@ -718,49 +297,8 @@
         </div>
     </footer>
 
-    <!-- JavaScript for smooth scrolling and animations -->
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add animation classes on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-on-scroll');
-                }
-            });
-        }, observerOptions);
-
-        // Observe all sections
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
-
-        // Track button clicks for analytics (if needed)
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // Add analytics tracking here if needed
-                console.log('Button clicked:', this.textContent);
-            });
-        });
-    </script>
+    <!-- JavaScript -->
+    <script src="assets-landing/scripts.js"></script>
 
     <!-- Schema.org structured data for better SEO -->
     <script type="application/ld+json">
