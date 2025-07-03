@@ -477,21 +477,31 @@ const showUpdateBanner = (release) => {
       </div>
       <p>Version ${release.tag_name} is now available with new features and improvements!</p>
       <div class="update-actions">
-        <button class="update-btn" onclick="window.open('${release.html_url}', '_blank')">
+        <button class="update-btn">
           <i class="fas fa-download"></i> Download Update
         </button>
-        <button class="changelog-btn" onclick="window.open('${release.html_url}', '_blank')">
+        <button class="changelog-btn">
           <i class="fas fa-list"></i> View Changes
         </button>
       </div>
     </div>
   `;
   
-  // Add event listener for dismiss button
+  // Add event listeners for all buttons after creating the element
   updateBanner.querySelector('.dismiss-update').addEventListener('click', () => {
     updateBanner.remove();
     // Remember that user dismissed this version
     chrome.storage.local.set({ dismissedVersion: release.tag_name?.replace('v', '') || '' });
+  });
+  
+  // Add event listener for download button
+  updateBanner.querySelector('.update-btn').addEventListener('click', () => {
+    window.open(release.html_url, '_blank');
+  });
+  
+  // Add event listener for changelog button
+  updateBanner.querySelector('.changelog-btn').addEventListener('click', () => {
+    window.open(release.html_url, '_blank');
   });
   
   // Insert at the top of the container, after the logo
