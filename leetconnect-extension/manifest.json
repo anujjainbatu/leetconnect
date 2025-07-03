@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LeetConnect",
-  "version": "1.2",
+  "version": "1.2.2",
   "description": "Connect with friends and track LeetCode progress together - view stats, get notifications, and stay motivated.",
   "permissions": [
     "storage",
