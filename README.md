@@ -3,7 +3,7 @@
 A Chrome extension that connects you with friends and lets you track LeetCode statistics in real-time. Stay motivated by seeing your friends' progress and get notified when they solve new problems!
 
 ![LeetConnect](https://img.shields.io/badge/Chrome-Extension-brightgreen)
-![Version](https://img.shields.io/badge/version-1.2-blue)
+![Version](https://img.shields.io/badge/version-1.2.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## 📂 Project Structure
@@ -112,7 +112,7 @@ cd leetconnect-extension
 ```bash
 # Create a ZIP file for Chrome Web Store
 cd leetconnect-extension
-zip -r ../leetconnect-extension-v1.2.zip . -x "*.DS_Store" "*.git*"
+zip -r ../leetconnect-extension-v1.2.2.zip . -x "*.DS_Store" "*.git*"
 ```
 
 ## 🔧 Configuration Options
