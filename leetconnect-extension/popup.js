@@ -2,7 +2,80 @@
 
 import { API_BASE, JWT, loadToken, saveToken } from "./config.js";
 
+
+// Initialize JWT from chrome.storage
 loadToken();
+
+// ───────────── AUTH FLOW ─────────────
+// Google Sign‑in
+document.getElementById("google-signin").addEventListener("click", async () => {
+  try {
+    const idToken = await new Promise((resolve, reject) => {
+      chrome.identity.getAuthToken({ interactive: true }, token => {
+        if (chrome.runtime.lastError || !token) return reject(chrome.runtime.lastError);
+        resolve(token);
+      });
+    });
+
+    const res = await fetch(`${API_BASE}/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_token: idToken })
+    });
+    const { access_token } = await res.json();
+    saveToken(access_token);
+    alert("Signed in via Google!");
+  } catch (e) {
+    console.error(e);
+    alert("Google Sign‑In failed.");
+  }
+});
+
+// Manual Sign‑up / Sign‑in
+document.getElementById("manual-signin").addEventListener("click", async () => {
+  const email = prompt("Your satiengg.in email:");
+  const password = prompt("Your password:");
+  const haveAccount = confirm("OK if you already have an account, Cancel to sign up");
+  const endpoint = haveAccount ? "/auth/login" : "/auth/signup";
+  const payload = { email, password };
+  if (!haveAccount) payload.name = prompt("Your full name:");
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const { access_token } = await res.json();
+    saveToken(access_token);
+    alert(haveAccount ? "Logged in!" : "Signed up!");
+  } catch (e) {
+    console.error(e);
+    alert("Manual auth failed.");
+  }
+});
+
+// After auth, ask for LeetCode username
+document.getElementById("enter-username").addEventListener("click", async () => {
+  if (!JWT) return alert("Please sign in first!");
+  const lcUser = prompt("Enter your LeetCode username:");
+  try {
+    await fetch(`${API_BASE}/auth/set-username`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${JWT}`
+      },
+      body: JSON.stringify({ username: lcUser })
+    });
+    alert("Username saved! Fetching leaderboard...");
+    fetchLeaderboard();
+  } catch (e) {
+    console.error(e);
+    alert("Failed to set username.");
+  }
+});
+// ───────── END AUTH FLOW ─────────
+
 
 // Store user data globally for sorting
 let userData = [];

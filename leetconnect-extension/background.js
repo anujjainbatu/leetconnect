@@ -288,3 +288,27 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 
 // Initialize when service worker starts
 console.log('Background script loaded');
+
+
+// ────── Watched Users Alarm Handler ──────
+// When any alarm triggers, fetch stats for each watched user using JWT auth
+chrome.alarms.onAlarm.addListener(async () => {
+  try {
+    const { watchedUsers } = await chrome.storage.local.get(['watchedUsers']);
+    if (!watchedUsers || !Array.isArray(watchedUsers)) return;
+
+    for (const username of watchedUsers) {
+      try {
+        const res = await fetch(`${API_BASE}/leaderboard/user/${username}`, {
+          headers: { 'Authorization': `Bearer ${JWT}` }
+        });
+        const stats = await res.json();
+        // TODO: compare `stats` to previous values and fire notifications if improved
+      } catch (e) {
+        console.error('Background fetch error for', username, e);
+      }
+    }
+  } catch (e) {
+    console.error('Error retrieving watchedUsers from storage:', e);
+  }
+});
