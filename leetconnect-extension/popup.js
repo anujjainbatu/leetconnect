@@ -1,4 +1,8 @@
-const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
+// const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
+
+import { API_BASE, JWT, loadToken, saveToken } from "./config.js";
+
+loadToken();
 
 // Store user data globally for sorting
 let userData = [];

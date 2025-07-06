@@ -1,4 +1,8 @@
-const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
+// const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
+
+import { API_BASE, JWT, loadToken, saveToken } from "./config.js";
+
+loadToken();
 
 // Update this with each release - IMPORTANT: Change this when you release new versions
 const CURRENT_VERSION = chrome.runtime.getManifest().version;
