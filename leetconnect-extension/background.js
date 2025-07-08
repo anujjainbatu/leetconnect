@@ -1,8 +1,5 @@
-// const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
+const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
 
-import { API_BASE, JWT, loadToken, saveToken } from "./config.js";
-
-loadToken();
 
 // Update this with each release - IMPORTANT: Change this when you release new versions
 const CURRENT_VERSION = chrome.runtime.getManifest().version;
@@ -290,25 +287,3 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 console.log('Background script loaded');
 
 
-// ────── Watched Users Alarm Handler ──────
-// When any alarm triggers, fetch stats for each watched user using JWT auth
-chrome.alarms.onAlarm.addListener(async () => {
-  try {
-    const { watchedUsers } = await chrome.storage.local.get(['watchedUsers']);
-    if (!watchedUsers || !Array.isArray(watchedUsers)) return;
-
-    for (const username of watchedUsers) {
-      try {
-        const res = await fetch(`${API_BASE}/leaderboard/user/${username}`, {
-          headers: { 'Authorization': `Bearer ${JWT}` }
-        });
-        const stats = await res.json();
-        // TODO: compare `stats` to previous values and fire notifications if improved
-      } catch (e) {
-        console.error('Background fetch error for', username, e);
-      }
-    }
-  } catch (e) {
-    console.error('Error retrieving watchedUsers from storage:', e);
-  }
-});
