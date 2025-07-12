@@ -1,5 +1,6 @@
 const API_BASE = "https://leetcode-api-faisalshohag.vercel.app";
 
+
 // Update this with each release - IMPORTANT: Change this when you release new versions
 const CURRENT_VERSION = chrome.runtime.getManifest().version;
 const GITHUB_API_URL = "https://api.github.com/repos/anujjainbatu/leetconnect/releases/latest";
@@ -284,3 +285,5 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 
 // Initialize when service worker starts
 console.log('Background script loaded');
+
+

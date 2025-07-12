@@ -1,40 +1,47 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- SEO Meta Tags -->
     <title>LeetConnect - Track LeetCode Progress with Friends | Chrome Extension</title>
-    <meta name="description" content="LeetConnect is a Chrome extension that lets you track your friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together. Perfect for coding study groups!">
-    <meta name="keywords" content="leetcode tracker, coding friends, chrome extension, programming practice, leetcode stats, coding study group, algorithm practice, competitive programming">
+    <meta name="description"
+        content="LeetConnect is a Chrome extension that lets you track your friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together. Perfect for coding study groups!">
+    <meta name="keywords"
+        content="leetcode tracker, coding friends, chrome extension, programming practice, leetcode stats, coding study group, algorithm practice, competitive programming">
     <meta name="author" content="Anuj Jain">
     <meta name="robots" content="index, follow">
-    
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="LeetConnect - Track LeetCode Progress with Friends">
-    <meta property="og:description" content="Chrome extension to track friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together!">
+    <meta property="og:description"
+        content="Chrome extension to track friends' LeetCode progress in real-time. Get notifications, compare stats, and stay motivated together!">
     <meta property="og:image" content="https://leetconnect.anujjainbatu.tech/assets-landing/screenshots/feature-1.png">
     <meta property="og:url" content="https://leetconnect.anujjainbatu.tech/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="LeetConnect">
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LeetConnect - Track LeetCode Progress with Friends">
-    <meta name="twitter:description" content="Chrome extension to track friends' LeetCode progress in real-time. Perfect for coding study groups!">
-    <meta property="twitter:image" content="https://leetconnect.anujjainbatu.tech/assets-landing/screenshots/feature-2.png">
-    
+    <meta name="twitter:description"
+        content="Chrome extension to track friends' LeetCode progress in real-time. Perfect for coding study groups!">
+    <meta property="twitter:image"
+        content="https://leetconnect.anujjainbatu.tech/assets-landing/screenshots/feature-2.png">
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="assets-landing/favicon.ico">
     <link rel="apple-touch-icon" href="leetconnect-extension/icons/icon128.png">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://leetconnect.anujjainbatu.tech/">
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="assets-landing/styles.css">
-    
+
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -60,6 +67,7 @@
     }
     </script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -71,6 +79,7 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#demo">Demo</a></li>
                 <li><a href="#installation">Install</a></li>
+                <li><a href="javascript:void(0)" class="btn-auth">Login</a></li>
                 <li><a href="#support">Support</a></li>
             </ul>
         </nav>
@@ -80,7 +89,8 @@
     <section class="hero">
         <div class="container">
             <h1>Track LeetCode Progress with Friends</h1>
-            <p>LeetConnect is the ultimate Chrome extension for coding study groups. Track your friends' LeetCode progress in real-time, get notifications when they solve problems, and stay motivated together!</p>
+            <p>LeetConnect is the ultimate Chrome extension for coding study groups. Track your friends' LeetCode
+                progress in real-time, get notifications when they solve problems, and stay motivated together!</p>
             <div class="cta-buttons">
                 <a href="https://github.com/anujjainbatu/leetconnect/releases" class="btn btn-primary" target="_blank">
                     🚀 Download Extension
@@ -100,7 +110,10 @@
                 <img src="assets-landing/screenshots/demo-web.gif" alt="LeetConnect Demo - Real-time friend tracking">
             </div>
             <p style="text-align: center; font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto;">
-                Watch how easy it is to add friends, track their progress, sort by different criteria, and get real-time notifications. Visit <a href="https://leetconnect.anujjainbatu.tech/" style="color: #FFA116; text-decoration: none;">leetconnect.anujjainbatu.tech</a> for more information!
+                Watch how easy it is to add friends, track their progress, sort by different criteria, and get real-time
+                notifications. Visit <a href="https://leetconnect.anujjainbatu.tech/"
+                    style="color: #FFA116; text-decoration: none;">leetconnect.anujjainbatu.tech</a> for more
+                information!
             </p>
         </div>
     </section>
@@ -113,37 +126,43 @@
                 <div class="feature-card">
                     <div class="feature-icon stats-icon"></div>
                     <h3>Real-time Stats Tracking</h3>
-                    <p>View total problems solved, difficulty breakdowns, and current rankings for all your friends in one place.</p>
+                    <p>View total problems solved, difficulty breakdowns, and current rankings for all your friends in
+                        one place.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon notification-icon"></div>
                     <h3>Smart Notifications</h3>
-                    <p>Get instant notifications when friends solve new problems. Stay motivated and celebrate achievements together!</p>
+                    <p>Get instant notifications when friends solve new problems. Stay motivated and celebrate
+                        achievements together!</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon ranking-icon"></div>
                     <h3>Ranking Changes</h3>
-                    <p>Track ranking improvements and drops with visual indicators. See who's climbing the leaderboard!</p>
+                    <p>Track ranking improvements and drops with visual indicators. See who's climbing the leaderboard!
+                    </p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon sort-icon"></div>
                     <h3>Multiple Sorting Options</h3>
-                    <p>Sort friends by rating, questions solved, or alphabetically. Find the perfect view for your team.</p>
+                    <p>Sort friends by rating, questions solved, or alphabetically. Find the perfect view for your team.
+                    </p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon cache-icon"></div>
                     <h3>Smart Caching</h3>
-                    <p>Instant loading with cached data while fetching fresh updates. Never wait for your stats again!</p>
+                    <p>Instant loading with cached data while fetching fresh updates. Never wait for your stats again!
+                    </p>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon settings-icon"></div>
                     <h3>Auto-refresh & Settings</h3>
-                    <p>Customizable auto-refresh intervals (5-60 minutes) and notification preferences. Control your tracking experience.</p>
+                    <p>Customizable auto-refresh intervals (5-60 minutes) and notification preferences. Control your
+                        tracking experience.</p>
                 </div>
             </div>
         </div>
@@ -156,27 +175,33 @@
             <div class="use-cases-grid">
                 <div class="use-case">
                     <h3><span class="use-case-icon bootcamp-icon"></span>Coding Bootcamps</h3>
-                    <p>Track classmate progress and stay motivated throughout your bootcamp journey. Build accountability and celebrate collective achievements.</p>
+                    <p>Track classmate progress and stay motivated throughout your bootcamp journey. Build
+                        accountability and celebrate collective achievements.</p>
                 </div>
                 <div class="use-case">
                     <h3><span class="use-case-icon group-icon"></span>Study Groups</h3>
-                    <p>Monitor your study group's collective progress and celebrate milestones together. Foster collaborative learning and peer motivation.</p>
+                    <p>Monitor your study group's collective progress and celebrate milestones together. Foster
+                        collaborative learning and peer motivation.</p>
                 </div>
                 <div class="use-case">
                     <h3><span class="use-case-icon workplace-icon"></span>Workplace Teams</h3>
-                    <p>Keep tabs on colleagues' coding practice and build a culture of continuous learning. Enhance team skills and technical growth.</p>
+                    <p>Keep tabs on colleagues' coding practice and build a culture of continuous learning. Enhance team
+                        skills and technical growth.</p>
                 </div>
                 <div class="use-case">
                     <h3><span class="use-case-icon trophy-icon"></span>Competitive Programming</h3>
-                    <p>Monitor team members' contest performance and practice statistics. Track progress in competitive coding challenges and contests.</p>
+                    <p>Monitor team members' contest performance and practice statistics. Track progress in competitive
+                        coding challenges and contests.</p>
                 </div>
                 <div class="use-case">
                     <h3><span class="use-case-icon student-icon"></span>Computer Science Students</h3>
-                    <p>Compare progress with classmates and stay motivated for technical interviews. Prepare together for coding interviews and assessments.</p>
+                    <p>Compare progress with classmates and stay motivated for technical interviews. Prepare together
+                        for coding interviews and assessments.</p>
                 </div>
                 <div class="use-case">
                     <h3><span class="use-case-icon motivation-icon"></span>Personal Motivation</h3>
-                    <p>Follow friends' coding activity to maintain your own practice momentum. Stay consistent and motivated in your coding journey.</p>
+                    <p>Follow friends' coding activity to maintain your own practice momentum. Stay consistent and
+                        motivated in your coding journey.</p>
                 </div>
             </div>
         </div>
@@ -209,7 +234,8 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 3rem;">
-                <a href="https://github.com/anujjainbatu/leetconnect#-installation" class="btn btn-primary" target="_blank">
+                <a href="https://github.com/anujjainbatu/leetconnect#-installation" class="btn btn-primary"
+                    target="_blank">
                     📖 View Installation Guide
                 </a>
             </div>
@@ -247,7 +273,8 @@
     <section class="cta-section">
         <div class="container">
             <h2>Ready to Transform Your Coding Journey?</h2>
-            <p>Join developers who are staying motivated and tracking progress together with LeetConnect. Currently in development - help us improve!</p>
+            <p>Join developers who are staying motivated and tracking progress together with LeetConnect. Currently in
+                development - help us improve!</p>
             <div class="cta-buttons">
                 <a href="https://github.com/anujjainbatu/leetconnect" class="btn btn-primary" target="_blank">
                     🚀 Get LeetConnect
@@ -268,14 +295,16 @@
                     <a href="#features">Features</a>
                     <a href="#installation">Installation</a>
                     <a href="docs/user-guide.md" target="_blank">User Guide</a>
-                    <a href="https://github.com/anujjainbatu/leetconnect#-troubleshooting" target="_blank">Troubleshooting</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect#-troubleshooting"
+                        target="_blank">Troubleshooting</a>
                 </div>
                 <div class="footer-section">
                     <h3>Support</h3>
                     <a href="https://forms.gle/tsSvgUKQnUtYiF8d9" target="_blank">Feedback Form</a>
                     <a href="mailto:anujjainbatu@gmail.com">Email Support</a>
                     <a href="https://github.com/anujjainbatu/leetconnect/issues" target="_blank">Report Issues</a>
-                    <a href="https://github.com/anujjainbatu/leetconnect#privacy-policy" target="_blank">Privacy Policy</a>
+                    <a href="https://github.com/anujjainbatu/leetconnect#privacy-policy" target="_blank">Privacy
+                        Policy</a>
                 </div>
                 <div class="footer-section">
                     <h3>Developer</h3>
@@ -286,19 +315,58 @@
                 </div>
                 <div class="footer-section">
                     <h3>Connect</h3>
-                    <a href="https://twitter.com/intent/tweet?text=Just%20found%20LeetConnect!%20🔗%20An%20amazing%20Chrome%20extension%20to%20track%20friends'%20LeetCode%20progress%20in%20real-time.%20Perfect%20for%20coding%20study%20groups!%20%23LeetCode%20%23Coding&url=https://leetconnect.anujjainbatu.tech/" target="_blank">Share on Twitter</a>
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://leetconnect.anujjainbatu.tech/" target="_blank">Share on LinkedIn</a>
-                    <a href="https://wa.me/?text=Just%20found%20an%20amazing%20Chrome%20extension%20called%20LeetConnect!%20Check%20it%20out:%20https://leetconnect.anujjainbatu.tech/" target="_blank">Share on WhatsApp</a>
+                    <a href="https://twitter.com/intent/tweet?text=Just%20found%20LeetConnect!%20🔗%20An%20amazing%20Chrome%20extension%20to%20track%20friends'%20LeetCode%20progress%20in%20real-time.%20Perfect%20for%20coding%20study%20groups!%20%23LeetCode%20%23Coding&url=https://leetconnect.anujjainbatu.tech/"
+                        target="_blank">Share on Twitter</a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://leetconnect.anujjainbatu.tech/"
+                        target="_blank">Share on LinkedIn</a>
+                    <a href="https://wa.me/?text=Just%20found%20an%20amazing%20Chrome%20extension%20called%20LeetConnect!%20Check%20it%20out:%20https://leetconnect.anujjainbatu.tech/"
+                        target="_blank">Share on WhatsApp</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 LeetConnect. Made with ❤️ by <a href="https://github.com/anujjainbatu" target="_blank">Anuj Jain</a>. Open source and free forever.</p>
+                <p>&copy; 2024 LeetConnect. Made with ❤️ by <a href="https://github.com/anujjainbatu"
+                        target="_blank">Anuj Jain</a>. Open source and free forever.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Auth Modal (hidden by default) -->
+    <div id="auth-modal" class="auth-modal hidden">
+        <div class="auth-content">
+            <h2>Sign In / Sign Up</h2>
+            <input id="auth-email" type="email" placeholder="Your email (@satiengg.in)" />
+            <input id="auth-password" type="password" placeholder="Password (≥8 chars)" />
+            <input id="auth-name" type="text" placeholder="Full Name (for sign‑up)" />
+            <div class="auth-buttons">
+                <button id="btn-login">Login</button>
+                <button id="btn-signup">Sign Up</button>
+                <button id="btn-google">Sign in with Google</button>
+                <button id="btn-close">Close</button>
+            </div>
+            <p id="auth-error" class="text-red-600"></p>
+            <p class="text-xs">
+                <a href="javascript:void(0)" id="switch-auth" class="text-primary underline">
+                    Don’t have an account? Sign Up
+                </a>
+            </p>
+
+        </div>
+    </div>
+
+    <!-- Handle‑entry Modal (hidden by default) -->
+    <div id="handle-modal" class="auth-modal hidden">
+        <div class="auth-content">
+            <h2>Enter Your LeetCode Username</h2>
+            <input id="handle-input" type="text" placeholder="e.g. leetcode_user123" />
+            <div class="auth-buttons" style="margin-top:1rem;">
+                <button id="btn-handle-submit">Save Handle</button>
+            </div>
+            <p id="handle-error" class="text-red-600"></p>
+        </div>
+    </div>
+
     <!-- JavaScript -->
-    <script src="assets-landing/scripts.js"></script>
+    <script type="module" src="assets-landing/scripts.js"></script>
 
     <!-- Schema.org structured data for better SEO -->
     <script type="application/ld+json">
@@ -335,4 +403,5 @@
     }
     </script>
 </body>
+
 </html>
