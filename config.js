@@ -1,5 +1,6 @@
 // config.js
 export const API_BASE = "http://localhost:8000";
+export const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
 export let JWT = null;
 
 // Helpers to load/save JWT

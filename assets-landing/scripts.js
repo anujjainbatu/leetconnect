@@ -1,14 +1,8 @@
-import { API_BASE, JWT, loadToken, saveToken, apiFetch } from '../config.js';
+import { API_BASE, JWT, loadToken, saveToken, apiFetch, GOOGLE_CLIENT_ID } from '../config.js';
 
 let isSignup = false;
-
-// grab the link out here so it’s in scope
-let modal;
-let authLink;
-let loginBtn;
-let signupBtn;
-let nameInput;
-let switchLink;
+let modal, authLink, loginBtn, signupBtn, nameInput, switchLink;
+let handleModal, handleInput, handleSubmitBtn, handleError;
 
 function handleAuthLink() {
   if (JWT) {
@@ -89,22 +83,33 @@ document.querySelectorAll('.btn').forEach(btn => {
 });
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  // wire up our auth elements
-  modal     = document.getElementById('auth-modal');
-  authLink  = document.querySelector('.btn-auth');
-  loginBtn  = document.getElementById('btn-login');
-  signupBtn = document.getElementById('btn-signup');
-  nameInput = document.getElementById('auth-name');
-  switchLink= document.getElementById('switch-auth');
 
-  // ① initial sync
+
+document.addEventListener('DOMContentLoaded', () => {
+  // wire up auth elements
+  modal        = document.getElementById('auth-modal');
+  authLink     = document.querySelector('.btn-auth');
+  loginBtn     = document.getElementById('btn-login');
+  signupBtn    = document.getElementById('btn-signup');
+  nameInput    = document.getElementById('auth-name');
+  switchLink   = document.getElementById('switch-auth');
+
+  // wire up handle elements
+  handleModal      = document.getElementById('handle-modal');
+  handleInput      = document.getElementById('handle-input');
+  handleSubmitBtn  = document.getElementById('btn-handle-submit');
+  handleError      = document.getElementById('handle-error');
+
+  // ① initial auth‑link state
   handleAuthLink();
 
-  // ② then load any saved token from chrome.storage
-  loadToken();
+  // ② load any saved JWT
+  loadToken(() => {
+    // if we already had a token, kick off the post‑login flow
+    if (JWT) afterLoginFlow();
+  });
 
-  // mode toggle link
+  // auth‑mode switch
   renderAuthMode();
   switchLink.onclick = () => {
     isSignup = !isSignup;
@@ -112,47 +117,43 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAuthMode();
   };
 
-  // Close modal
+  // close login/signup modal
   document.getElementById('btn-close').onclick = () => modal.classList.add('hidden');
 
-  // Manual Login
+  // LOGIN
   loginBtn.onclick = async () => {
-    const email = document.getElementById('auth-email').value;
+    const email    = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
     try {
       const { access_token } = await apiFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password })
+        method: 'POST', body: JSON.stringify({ email, password })
       });
       saveToken(access_token);
       handleAuthLink();
       modal.classList.add('hidden');
-      alert('Logged in!');
-      renderLeaderboard();
+      await afterLoginFlow();
     } catch (e) {
       document.getElementById('auth-error').textContent = e.message;
     }
   };
 
-  // Manual Signup
+  // SIGNUP
   signupBtn.onclick = async () => {
-    const email = document.getElementById('auth-email').value;
+    const email    = document.getElementById('auth-email').value;
     const password = document.getElementById('auth-password').value;
-    const name = document.getElementById('auth-name').value;
+    const name     = document.getElementById('auth-name').value;
     try {
       const { access_token } = await apiFetch('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({ email, password, name })
+        method: 'POST', body: JSON.stringify({ email, password, name })
       });
       saveToken(access_token);
       handleAuthLink();
       modal.classList.add('hidden');
-      alert('Signed up & logged in!');
-      renderLeaderboard();
+      await afterLoginFlow();
     } catch (err) {
       console.error("Signup failed:", err);
       if (err.message.startsWith("API error 422")) {
-        const res = await fetch(`${API_BASE}/auth/signup`, {
+        const res  = await fetch(`${API_BASE}/auth/signup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, name })
@@ -166,12 +167,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Google Sign‑In
+  // GOOGLE SIGN‑IN
   document.getElementById('btn-google').onclick = async () => {
     try {
-      const idToken = await new Promise((resolve) => {
+      const idToken = await new Promise(resolve => {
         const w = window.open(
-          `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&response_type=id_token&scope=openid%20email&redirect_uri=${location.origin}/oauth-callback.html&nonce=${Date.now()}`,
+          `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}` +
+          `&response_type=id_token&scope=openid%20email&redirect_uri=${location.origin}/oauth-callback.html` +
+          `&nonce=${Date.now()}`,
           '_blank','width=500,height=600'
         );
         window.addEventListener('message', e => {
@@ -179,18 +182,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
       const { access_token } = await apiFetch('/auth/google', {
-        method:'POST',
-        body: JSON.stringify({ id_token: idToken })
+        method: 'POST', body: JSON.stringify({ id_token: idToken })
       });
       saveToken(access_token);
       handleAuthLink();
       modal.classList.add('hidden');
-      alert('Logged in with Google!');
-      renderLeaderboard();
+      await afterLoginFlow();
     } catch (e) {
       document.getElementById('auth-error').textContent = e.message;
     }
   };
+
+  // HANDLE‑SUBMIT
+  handleSubmitBtn.onclick = async () => {
+    const username = handleInput.value.trim();
+    if (!username) {
+      handleError.textContent = "Please enter a username.";
+      return;
+    }
+    try {
+      const updatedUser = await apiFetch('/user/me/leetcode', {
+        method: 'POST',
+        body: JSON.stringify({ username })
+      });
+      handleModal.classList.add('hidden');
+      renderLeaderboard();
+    } catch (e) {
+      handleError.textContent = e.message;
+    }
+  };
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// After login or signup, fetch /user/me, decide whether to show handle modal
+async function afterLoginFlow() {
+  try {
+    const me = await apiFetch('/user/me');
+    if (!me.leetcode_username) {
+      handleInput.value = '';
+      handleError.textContent = '';
+      handleModal.classList.remove('hidden');
+    } else {
+      renderLeaderboard();
+    }
+  } catch (e) {
+    console.error("Could not fetch /user/me:", e);
+  }
+}
 
   // Leaderboard renderer
   async function renderLeaderboard() {
@@ -213,4 +251,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // initial leaderboard if already logged in
   if (JWT) renderLeaderboard();
-});
